@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { VoicingNotation } from './VoicingNotation'
+import { getNotesFromDigest, analyzeVoicing } from '../utils/pitchClass'
 
 interface VoicingData {
   voicing_id: number
@@ -76,6 +78,10 @@ export function VoicingDetail() {
   const totalDuration = allVoicings.reduce((sum, v) => sum + v.duration, 0)
   const frequencyPercent = ((voicing.frequency / totalFrequency) * 100).toFixed(3)
   const durationPercent = ((voicing.duration / totalDuration) * 100).toFixed(3)
+
+  // Analyze the voicing from digest
+  const noteInfo = getNotesFromDigest(voicing.digest)
+  const voicingAnalysis = analyzeVoicing(voicing.digest)
 
   return (
     <div className="app">
@@ -175,6 +181,76 @@ export function VoicingDetail() {
                       </span>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="musical-analysis">
+              <h2>Musical Analysis</h2>
+              
+              <div className="analysis-grid">
+                <div className="notation-section">
+                  <h3>Sheet Music</h3>
+                  <VoicingNotation 
+                    notes={noteInfo.notes} 
+                  />
+                </div>
+
+                <div className="voicing-info">
+                  <h3>Voicing Details</h3>
+                  <div className="voicing-stats">
+                    <div className="stat-row">
+                      <span className="stat-label">Note Count:</span>
+                      <span className="stat-value">{voicingAnalysis.noteCount}</span>
+                    </div>
+                    <div className="stat-row">
+                      <span className="stat-label">Span:</span>
+                      <span className="stat-value">{voicingAnalysis.span}</span>
+                    </div>
+                    <div className="stat-row">
+                      <span className="stat-label">Lowest Note:</span>
+                      <span className="stat-value">{noteInfo.noteNames[0]}</span>
+                    </div>
+                    <div className="stat-row">
+                      <span className="stat-label">Highest Note:</span>
+                      <span className="stat-value">{noteInfo.noteNames[noteInfo.noteNames.length - 1]}</span>
+                    </div>
+                  </div>
+
+                  <div className="note-list">
+                    <h4>Notes in Voicing:</h4>
+                    <div className="notes-grid">
+                      {voicingAnalysis.noteNames.map((noteName, index) => (
+                        <span key={index} className="note-badge">
+                          {noteName}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pitch-classes">
+                    <h4>Pitch Classes:</h4>
+                    <div className="pitch-classes-grid">
+                      {voicingAnalysis.pitchClasses.map((pc, index) => (
+                        <span key={index} className="pitch-class-badge">
+                          {pc}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {voicingAnalysis.intervals.length > 0 && (
+                    <div className="intervals">
+                      <h4>Intervals:</h4>
+                      <div className="intervals-grid">
+                        {voicingAnalysis.intervalNames.map((interval, index) => (
+                          <span key={index} className="interval-badge">
+                            {interval} ({voicingAnalysis.intervals[index]}st)
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

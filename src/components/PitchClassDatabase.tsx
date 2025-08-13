@@ -27,7 +27,7 @@ export function PitchClassDatabase() {
     maxPitches: ''
   })
 
-  const itemsPerPage = 15
+  const itemsPerPage = 10
 
   useEffect(() => {
     const loadData = () => {
@@ -128,13 +128,13 @@ export function PitchClassDatabase() {
       <div className="main-content">
         <aside className="sidebar">
         
-          {selectedPcid && (
+          {/* {selectedPcid && (
             <div className="visualization-panel">
               <h4>Pitch Class Visualization</h4>
-              <MusicNotation pcid={selectedPcid} showBinary={false} />
+              <MusicNotation pcid={selectedPcid} />
             </div>
-          )}
-          
+          )} */}
+
           <h3>Filters</h3>
           
           <div className="filter-group">
@@ -238,7 +238,8 @@ export function PitchClassDatabase() {
                       <th>PCID</th>
                       <th>Pitch Classes</th>
                       <th>Frequency</th>
-                      <th>Duration</th>
+                      {/* <th>Duration</th> */}
+                      <th>Notes</th>
                       <th>Frequency %</th>
                       <th>Duration %</th>
                     </tr>
@@ -265,7 +266,13 @@ export function PitchClassDatabase() {
                           </td>
                           <td className="pitch-list">{pitches.join(' ')}</td>
                           <td>{item.frequency.toLocaleString()}</td>
-                          <td>{item.duration.toLocaleString()}</td>
+                          {/* <td>{item.duration.toLocaleString()}</td> */}
+                          <td>
+                            <MusicNotation 
+                              pcid={item.pcid}
+                              showTitle={false}
+                            />
+                          </td>
                           <td>{frequencyPercent}%</td>
                           <td>{durationPercent}%</td>
                         </tr>

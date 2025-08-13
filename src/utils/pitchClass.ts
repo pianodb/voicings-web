@@ -149,3 +149,90 @@ export function getChordName(pcid: number): string {
   // Simple chord naming - just list the pitches
   return pitches.join(' ')
 }
+
+/**
+ * Get note names from MIDI note numbers
+ */
+export function getNoteName(midiNote: number): string {
+  const noteNames = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
+  const octave = Math.floor(midiNote / 12) - 1
+  const noteName = noteNames[midiNote % 12]
+  return `${noteName}${octave}`
+}
+
+/**
+ * Get note information from a digest string
+ */
+export function getNotesFromDigest(digest: string): {
+  notes: number[]
+  noteNames: string[]
+  pitchClasses: number[]
+  lowestNote: number
+  highestNote: number
+  span: number
+} {
+  const notes = unpackNotes(digest)
+  const noteNames = notes.map(note => getNoteName(note + 12))
+  const pitchClasses = [...new Set(notes.map(note => note % 12))].sort((a, b) => a - b)
+  const lowestNote = Math.min(...notes)
+  const highestNote = Math.max(...notes)
+  const span = highestNote - lowestNote
+  
+  return {
+    notes,
+    noteNames,
+    pitchClasses,
+    lowestNote,
+    highestNote,
+    span
+  }
+}
+
+/**
+ * Get voicing analysis from digest
+ */
+export function analyzeVoicing(digest: string): {
+  noteCount: number
+  noteNames: string[]
+  pitchClasses: string[]
+  span: string
+  intervals: number[]
+  intervalNames: string[]
+} {
+  const noteInfo = getNotesFromDigest(digest)
+  const intervals = []
+  const intervalNames = []
+  
+  // Calculate intervals between consecutive notes
+  for (let i = 1; i < noteInfo.notes.length; i++) {
+    const interval = noteInfo.notes[i] - noteInfo.notes[i - 1]
+    intervals.push(interval)
+    
+    // Basic interval naming
+    const intervalName = interval === 1 ? 'min2' :
+                        interval === 2 ? 'maj2' :
+                        interval === 3 ? 'min3' :
+                        interval === 4 ? 'maj3' :
+                        interval === 5 ? 'P4' :
+                        interval === 6 ? 'tritone' :
+                        interval === 7 ? 'P5' :
+                        interval === 8 ? 'min6' :
+                        interval === 9 ? 'maj6' :
+                        interval === 10 ? 'min7' :
+                        interval === 11 ? 'maj7' :
+                        interval === 12 ? 'octave' :
+                        `${interval}st`
+    intervalNames.push(intervalName)
+  }
+  
+  const pitchClassNames = noteInfo.pitchClasses.map(pc => PITCH_CLASSES[pc].name)
+  
+  return {
+    noteCount: noteInfo.notes.length,
+    noteNames: noteInfo.noteNames,
+    pitchClasses: pitchClassNames,
+    span: `${noteInfo.span} semitones`,
+    intervals,
+    intervalNames
+  }
+}

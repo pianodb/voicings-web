@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getPresentPitches } from '../utils/pitchClass'
+import { getPresentPitches, analyzeVoicing, getNotesFromDigest } from '../utils/pitchClass'
 import { MusicNotation } from './MusicNotation'
 import axios from 'axios'
+import { VoicingNotation } from './VoicingNotation'
 
 interface VoicingData {
   voicing_id: number
@@ -128,7 +129,7 @@ export function VoicingsByPcid() {
               <p><strong>Pitches:</strong> {pitches.join(' ')}</p>
               <p><strong>Binary:</strong> {pcidNumber.toString(2).padStart(12, '0')}</p>
             </div>
-            <MusicNotation pcid={pcidNumber} showBinary={false} />
+            <MusicNotation pcid={pcidNumber}/>
           </div>
           
           <div className="filter-section">
@@ -216,10 +217,13 @@ export function VoicingsByPcid() {
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>Voicing ID</th>
+                      <th>Digest</th>
+                      <th>Notes</th>
+                      {/* <th>Note Count</th> */}
+                      {/* <th>Span</th> */}
                       <th>Frequency</th>
                       <th>Duration</th>
-                      <th>Digest</th>
+                      <th>Notes</th>
                       <th>Frequency %</th>
                       <th>Duration %</th>
                     </tr>
@@ -231,17 +235,40 @@ export function VoicingsByPcid() {
                       const frequencyPercent = ((item.frequency / totalFrequency) * 100).toFixed(2)
                       const durationPercent = ((item.duration / totalDuration) * 100).toFixed(2)
                       
+                      let voicingAnalysis = null
+                      let parseDigest = null
+                      try {
+                        voicingAnalysis = analyzeVoicing(item.digest)
+                        parseDigest = getNotesFromDigest(item.digest)
+                      } catch (error) {
+                        console.error('Error analyzing voicing:', error)
+                      }
+                      
                       return (
-                        <tr key={item.voicing_id}>
+                        <tr key={item.digest}>
                           <td 
                             className="voicing-id" 
-                            onClick={() => navigate(`/voicing/${pcid}/${item.voicing_id}`)}
+                            onClick={() => navigate(`/voicing/${pcid}/${encodeURIComponent(item.digest)}`)}
+                            title="Click to view detailed analysis"
                           >
-                            {item.voicing_id}
+                            {item.digest}
                           </td>
+                          <td className="note-names">
+                            {voicingAnalysis ? voicingAnalysis.noteNames.join(' ') : 'Error parsing'}
+                          </td>
+                          {/* <td className="note-count">
+                            {voicingAnalysis ? voicingAnalysis.noteCount : '—'}
+                          </td>
+                          <td className="span-info">
+                            {voicingAnalysis ? voicingAnalysis.span : '—'}
+                          </td> */}
                           <td>{item.frequency.toLocaleString()}</td>
                           <td>{item.duration.toLocaleString()}</td>
-                          <td className="digest">{item.digest}</td>
+                          <td>
+                            <VoicingNotation 
+                            notes={parseDigest?.notes.map(n => n + 36)} 
+                            />
+                          </td>
                           <td>{frequencyPercent}%</td>
                           <td>{durationPercent}%</td>
                         </tr>

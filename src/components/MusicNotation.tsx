@@ -1,16 +1,15 @@
 import { useEffect, useRef } from 'react'
-import { pcidToPitchClasses, getPresentPitches, pcidToBinary, unpackPitchClass } from '../utils/pitchClass'
+import { pcidToPitchClasses, getPresentPitches, unpackPitchClass } from '../utils/pitchClass'
 
 interface MusicNotationProps {
   pcid: number
-  showBinary?: boolean
+  showTitle?: boolean
 }
 
-export function MusicNotation({ pcid, showBinary = false }: MusicNotationProps) {
+export function MusicNotation({ pcid, showTitle }: MusicNotationProps) {
   const svgRef = useRef<HTMLDivElement>(null)
   const pitchClasses = pcidToPitchClasses(pcid)
   const presentPitches = getPresentPitches(pcid)
-  const binary = pcidToBinary(pcid)
 
   useEffect(() => {
     const renderNotation = async () => {
@@ -31,13 +30,13 @@ export function MusicNotation({ pcid, showBinary = false }: MusicNotationProps) 
 
         // Create renderer
         const width = 150
-        const height = 150
+        const height = 100
         const renderer = new Renderer(svgRef.current, Renderer.Backends.SVG)
         renderer.resize(width, height)
         const context = renderer.getContext()
 
         // Create stave
-        const stave = new Stave(10, 10, width - 20)
+        const stave = new Stave(0, 0, width - 20)
         stave.addClef('treble')
         stave.setContext(context).draw()
 
@@ -127,41 +126,18 @@ export function MusicNotation({ pcid, showBinary = false }: MusicNotationProps) 
 
   return (
     <div className="music-notation">
-      <div className="chord-info">
-        <h4>{presentPitches.join(' ')}</h4>
-      </div>
-      <div ref={svgRef} className="notation-container" />
-      
-      {showBinary && (
-        <div className="binary-display">
-          <p>Binary: {binary} (PCID: {pcid})</p>
-          <div className="binary-breakdown">
-            {/* Show bits for notes 1-11 (Db through B), since C is always assumed */}
-            {pitchClasses.slice(1).map((pc, index) => (
-              <span
-                key={index}
-                className={`binary-bit ${pc.present ? 'bit-on' : 'bit-off'}`}
-                title={`${pc.name} (bit ${index})`}
-              >
-                {binary[binary.length - 1 - index]}
-              </span>
-            ))}
-          </div>
-          <div className="bit-labels">
-            {pitchClasses.slice(1).map((pc, index) => (
-              <span key={index} className="bit-label" title={pc.name}>
-                {pc.name}
-              </span>
-            ))}
-          </div>
+      {showTitle && (
+        <div className="chord-info">
+          <h4>{presentPitches.join(' ')}</h4>
         </div>
       )}
+      <div ref={svgRef} className="notation-container" />
 
       <style>{`
         .music-notation {
           background: white;
           border-radius: 8px;
-          padding: 15px;
+          padding: 2px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
           text-align: center;
         }
@@ -174,8 +150,8 @@ export function MusicNotation({ pcid, showBinary = false }: MusicNotationProps) 
         }
 
         .notation-container {
-          margin: 10px 0;
-          min-height: 120px;
+          margin: 2px 0;
+          min-height: 60px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -223,62 +199,6 @@ export function MusicNotation({ pcid, showBinary = false }: MusicNotationProps) 
           color: #6c757d;
           font-style: italic;
           padding: 20px;
-        }
-
-        .binary-display {
-          margin-top: 15px;
-          padding: 10px;
-          background: #f8f9fa;
-          border-radius: 6px;
-        }
-
-        .binary-display p {
-          margin: 0 0 8px 0;
-          font-family: 'Courier New', monospace;
-          color: #495057;
-          font-size: 0.85rem;
-        }
-
-        .binary-breakdown {
-          display: flex;
-          justify-content: center;
-          gap: 2px;
-        }
-
-        .binary-bit {
-          display: inline-block;
-          width: 18px;
-          height: 18px;
-          line-height: 18px;
-          text-align: center;
-          font-family: 'Courier New', monospace;
-          font-size: 0.75rem;
-          border-radius: 3px;
-        }
-
-        .bit-on {
-          background: #28a745;
-          color: white;
-        }
-
-        .bit-off {
-          background: #6c757d;
-          color: white;
-        }
-
-        .bit-labels {
-          display: flex;
-          justify-content: center;
-          gap: 2px;
-          margin-top: 4px;
-        }
-
-        .bit-label {
-          display: inline-block;
-          width: 18px;
-          text-align: center;
-          font-size: 0.65rem;
-          color: #6c757d;
         }
       `}</style>
     </div>

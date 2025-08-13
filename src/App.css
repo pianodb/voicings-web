@@ -224,14 +224,6 @@ body {
   text-decoration: underline;
 }
 
-.digest {
-  font-family: 'Courier New', monospace;
-  background: #f8f9fa;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-}
-
 /* Pagination */
 .pagination {
   display: flex;
@@ -380,14 +372,6 @@ body {
   font-weight: 500;
 }
 
-.digest-value {
-  font-family: 'Courier New', monospace;
-  background: #f8f9fa;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-}
-
 .sequences-section {
   background: #f8f9fa;
   padding: 1.5rem;
@@ -520,14 +504,6 @@ body {
   text-decoration: underline;
 }
 
-.pitch-list {
-  font-family: 'Courier New', monospace;
-  background: #f8f9fa;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  color: #495057;
-}
 
 .binary-display {
   font-family: 'Courier New', monospace;
@@ -655,7 +631,108 @@ body {
   text-decoration: underline;
 }
 
-/* Responsive */
+/* Musical Analysis Section */
+.musical-analysis {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.musical-analysis h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.notation-section h3,
+.voicing-info h3 {
+  margin-bottom: 1rem;
+  color: #495057;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.voicing-stats {
+  margin-bottom: 1.5rem;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #333;
+}
+
+.note-list h4,
+.pitch-classes h4,
+.intervals h4 {
+  margin-bottom: 0.75rem;
+  color: #495057;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.notes-grid,
+.pitch-classes-grid,
+.intervals-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.note-badge,
+.pitch-class-badge,
+.interval-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.note-badge {
+  background: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #bbdefb;
+}
+
+.pitch-class-badge {
+  background: #f3e5f5;
+  color: #7b1fa2;
+  border: 1px solid #e1bee7;
+}
+
+.interval-badge {
+  background: #e8f5e8;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
 @media (max-width: 768px) {
   .main-content {
     flex-direction: column;
@@ -741,5 +818,14 @@ body {
   
   .pitch-info p {
     font-size: 0.85rem;
+  }
+  
+  .analysis-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .musical-analysis {
+    padding: 1rem;
   }
 }

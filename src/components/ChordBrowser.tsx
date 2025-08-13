@@ -224,7 +224,7 @@ export function PitchClassDatabase() {
         <main className="content">
           <h2>Pitch Class Database</h2>
           <p className="subtitle">
-            Explore musical pitch class combinations and their frequencies in the dataset.
+            Explore musical pitch class combinations and their frequencies in the database.
             Click on a PCID to see its voicings.
           </p>
           

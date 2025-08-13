@@ -34,10 +34,16 @@ export function Contact() {
           </div>
 
           <div className="contact-methods">
-            <div className="contact-card">
+            {/* <div className="contact-card">
               <h4>📧 Email</h4>
               <p>For general inquiries, technical support, or collaboration opportunities:</p>
               <a href="mailto:info@pianodb.com" className="contact-link">info@pianodb.com</a>
+            </div> */}
+
+            <div className="contact-card">
+              <h4>📧 Discord</h4>
+              <p>For general inquiries, technical support, or collaboration opportunities:</p>
+              <a href="https://discord.gg/9BvE4khkqY" className="contact-link">Join our Discord server</a>
             </div>
 
             <div className="contact-card">
@@ -48,11 +54,11 @@ export function Contact() {
               </a>
             </div>
 
-            <div className="contact-card">
+            {/* <div className="contact-card">
               <h4>📚 Research Collaboration</h4>
               <p>Interested in using our data for academic research or have datasets to contribute?</p>
               <a href="mailto:research@pianodb.com" className="contact-link">research@pianodb.com</a>
-            </div>
+            </div> */}
           </div>
 
           <div className="contact-section">
@@ -60,32 +66,21 @@ export function Contact() {
             <div className="faq-item">
               <h4>How can I download the raw data?</h4>
               <p>
-                Currently, the data is available through our web interface. For bulk data access or research purposes, 
-                please contact us directly at research@pianodb.com.
+                We recommend downloading the entire dataset through huggingface: <a href="https://huggingface.co/datasets/conjuncts/voicings" target="_blank" rel="noopener noreferrer">conjuncts/voicings</a>
               </p>
             </div>
 
             <div className="faq-item">
-              <h4>Can I contribute my own performance data?</h4>
+              <h4>Can I contribute?</h4>
               <p>
-                Yes! We're always interested in expanding our dataset with high-quality performance data. 
-                Please reach out to discuss data formats and contribution guidelines.
+                Yes! Please reach out to us via Discord. 
               </p>
             </div>
 
             <div className="faq-item">
               <h4>Is there an API available?</h4>
               <p>
-                We're currently developing a public API for programmatic access to the voicing data. 
-                Contact us if you're interested in early access.
-              </p>
-            </div>
-
-            <div className="faq-item">
-              <h4>How often is the data updated?</h4>
-              <p>
-                We continuously analyze new performance data and update the database quarterly with 
-                new voicings and improved statistical analysis.
+                No. However, all the data on the website is accessible through huggingface.
               </p>
             </div>
           </div>
@@ -93,14 +88,11 @@ export function Contact() {
           <div className="contact-section">
             <h3>Acknowledgments</h3>
             <p>
-              PianoDB Voicings is made possible by the generous contributions of musicians, researchers, 
-              and institutions who have shared their performance data. Special thanks to:
+              We thank the following people for their hard work:
             </p>
             <ul>
-              <li>Contributors to the open-source music analysis community</li>
-              <li>Academic institutions providing performance datasets</li>
-              <li>Musicians who have shared their recordings for analysis</li>
-              <li>The broader music informatics research community</li>
+              <li>Louis Bradshaw, Simon Colton for Aria-MIDI, without which this project would not be possible</li>
+              <li>All musicians who have shared their recordings for analysis!</li>
             </ul>
           </div>
         </main>

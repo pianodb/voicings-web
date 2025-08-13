@@ -72,14 +72,10 @@ export function About() {
           <div className="about-section">
             <h3>Data Sources</h3>
             <p>
-              Our analysis is based on multiple datasets of piano performances, including classical, jazz, and contemporary 
-              music. We use the Aria-MIDI dataset (2025) by Bradshaw et al. 
+              Our analysis is based on the <a href="https://arxiv.org/abs/2504.15071">Aria-MIDI dataset (2025)</a>, a corpus of over one million MIDI files. Our analysis includes multiple genres, including classical, jazz, and contemporary music, though there is a strong focus on classical piano repertoire. Unique chords (those found less than 10 times) are excluded.
             </p>
             <p>
-              Just like the original Aria-MIDI dataset, our data is released under CC-BY-NC-SA-4.0
-            </p>
-            <p>
-              We are committed to transparency and open science, and all datasets on <a href="https://huggingface.co/datasets/conjuncts/voicings">huggingface</a> are available for research and exploration.
+              We release the data under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">CC BY-NC-SA-4.0</a>. We make the data available through <a href="https://huggingface.co/datasets/conjuncts/voicings">huggingface</a>.
             </p>
           </div>
 
@@ -93,7 +89,7 @@ export function About() {
               <li>Discover common voicing patterns in different musical styles</li>
               <li>Analyze the statistical prevalence of specific harmonic structures</li>
               <li>Find alternative voicings for your compositions</li>
-              <li>Study the relationship between chord frequency and musical context</li>
+              <li>Offer music theory insights into chord progressions and their frequency</li>
             </ul>
           </div>
         </main>

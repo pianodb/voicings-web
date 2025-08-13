@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<PitchClassDatabase />} />
-        <Route path="/pitch-classes" element={<PitchClassDatabase />} />
+        <Route path="/chords" element={<PitchClassDatabase />} />
         <Route path="/voicings/:pcid" element={<VoicingsByPcid />} />
         <Route path="/voicing/:pcid/:digest" element={<VoicingDetail />} />
         <Route path="/about" element={<About />} />

@@ -5,8 +5,8 @@ import './index.css'
 import App from './App.tsx'
 import { VoicingDetail } from './components/VoicingDetail.tsx'
 import { VoicingDetailDigest } from './components/VoicingDetailDigest.tsx'
-import { PitchClassDatabase } from './components/PitchClassDatabase.tsx'
-import { VoicingsByPcid } from './components/VoicingsByPcid.tsx'
+import { PitchClassDatabase } from './components/ChordBrowser.tsx'
+import { VoicingsByPcid } from './components/VoicingBrowser.tsx'
 import { About } from './components/About.tsx'
 import { Contact } from './components/Contact.tsx'
 
@@ -21,7 +21,6 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/voicing/:dataset/:id" element={<VoicingDetail />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/legacy" element={<App />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

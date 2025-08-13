@@ -92,9 +92,10 @@ export function VoicingDetail() {
             <h1>PianoDB Voicings</h1>
           </div>
           <nav className="nav">
-            <span className="nav-item">Chords</span>
+            <span className="nav-item" onClick={() => navigate('/')}>Chords</span>
             <span className="nav-item active">Voicings</span>            
-            <span className="nav-item">Contact</span>
+            <span className="nav-item" onClick={() => navigate('/about')}>About</span>
+            <span className="nav-item" onClick={() => navigate('/contact')}>Contact</span>
           </nav>
         </div>
       </header>

@@ -120,7 +120,8 @@ export function PitchClassDatabase() {
           <nav className="nav">
             <span className="nav-item active">Chords</span>
             <span className="nav-item disabled" onClick={() => navigate('/')}>Voicings</span>
-            <span className="nav-item">Contact</span>
+            <span className="nav-item" onClick={() => navigate('/about')}>About</span>
+            <span className="nav-item" onClick={() => navigate('/contact')}>Contact</span>
           </nav>
         </div>
       </header>

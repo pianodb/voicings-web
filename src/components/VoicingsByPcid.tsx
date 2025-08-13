@@ -113,10 +113,8 @@ export function VoicingsByPcid() {
             <h1>PianoDB Voicings</h1>
           </div>
           <nav className="nav">
-            <span className="nav-item" onClick={() => navigate('/pitch-classes')}>Pitch Classes</span>
+            <span className="nav-item" onClick={() => navigate('/pitch-classes')}>Chords</span>
             <span className="nav-item active">Voicings</span>
-            <span className="nav-item">Prediction</span>
-            <span className="nav-item">Team</span>
             <span className="nav-item">Contact</span>
           </nav>
         </div>
@@ -125,9 +123,6 @@ export function VoicingsByPcid() {
       <div className="main-content">
         <aside className="sidebar">
           <div className="pcid-info">
-            <button onClick={() => navigate('/pitch-classes')} className="back-link">
-              ← Back to Pitch Classes
-            </button>
             <h3>PCID {pcid}</h3>
             <div className="pitch-info">
               <p><strong>Pitches:</strong> {pitches.join(' ')}</p>
@@ -202,6 +197,9 @@ export function VoicingsByPcid() {
         </aside>
 
         <main className="content">
+          <button onClick={() => navigate('/pitch-classes')} className="back-link">
+            ← Back to Pitch Classes
+          </button>
           <h2>Voicings for PCID {pcid}</h2>
           <p className="subtitle">
             Showing all voicings that use the pitch classes: <strong>{pitches.join(' ')}</strong>

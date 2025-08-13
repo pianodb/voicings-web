@@ -122,9 +122,17 @@ export function pcidToPitchClasses(pcid: number): PitchClass[] {
   return pitchClasses
 }
 
-export function getPresentPitches(pcid: number): string[] {
+export function getPresentPitches(pcid: number, prettyPrint=true): string[] {
   const noteNumbers = unpackPitchClass(pcid)
-  return noteNumbers.map(noteNum => PITCH_CLASSES[noteNum].name)
+  const pretty = noteNumbers.map(noteNum => PITCH_CLASSES[noteNum].name);
+
+  // Pretty print
+  // Use heuristic: if A or G is present, then use F# instead of Gb
+  if (prettyPrint && pretty.includes('Gb') && (pretty.includes('A') || pretty.includes('G'))) {
+    const index = pretty.indexOf('Gb')
+    pretty[index] = 'F#'
+  }
+  return pretty;
 }
 
 export function pcidToBinary(pcid: number): string {

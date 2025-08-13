@@ -118,10 +118,8 @@ export function PitchClassDatabase() {
             <h1>PianoDB Voicings</h1>
           </div>
           <nav className="nav">
-            <span className="nav-item active">Pitch Classes</span>
-            <span className="nav-item" onClick={() => navigate('/')}>Voicings</span>
-            <span className="nav-item">Prediction</span>
-            <span className="nav-item">Team</span>
+            <span className="nav-item active">Chords</span>
+            <span className="nav-item disabled" onClick={() => navigate('/')}>Voicings</span>
             <span className="nav-item">Contact</span>
           </nav>
         </div>
@@ -129,6 +127,14 @@ export function PitchClassDatabase() {
 
       <div className="main-content">
         <aside className="sidebar">
+        
+          {selectedPcid && (
+            <div className="visualization-panel">
+              <h4>Pitch Class Visualization</h4>
+              <MusicNotation pcid={selectedPcid} showBinary={false} />
+            </div>
+          )}
+          
           <h3>Filters</h3>
           
           <div className="filter-group">
@@ -211,12 +217,7 @@ export function PitchClassDatabase() {
             Clear filters
           </button>
 
-          {selectedPcid && (
-            <div className="visualization-panel">
-              <h4>Pitch Class Visualization</h4>
-              <MusicNotation pcid={selectedPcid} showBinary={true} />
-            </div>
-          )}
+
         </aside>
 
         <main className="content">

@@ -18,10 +18,10 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedDataset, setSelectedDataset] = useState('34')
   const [filters, setFilters] = useState({
-    minFrequency: '',
-    maxFrequency: '',
-    minDuration: '',
-    maxDuration: '',
+    minFrequencyShare: '',
+    maxFrequencyShare: '',
+    minDurationShare: '',
+    maxDurationShare: '',
     digestFilter: ''
   })
 
@@ -61,17 +61,33 @@ function App() {
   useEffect(() => {
     let filtered = voicingData
 
-    if (filters.minFrequency) {
-      filtered = filtered.filter(item => item.frequency >= parseInt(filters.minFrequency))
+    // Calculate total values for percentage calculations
+    const totalFrequency = voicingData.reduce((sum, d) => sum + d.frequency, 0)
+    const totalDuration = voicingData.reduce((sum, d) => sum + d.duration, 0)
+
+    if (filters.minFrequencyShare) {
+      filtered = filtered.filter(item => {
+        const frequencyShare = (item.frequency / totalFrequency) * 100
+        return frequencyShare >= parseFloat(filters.minFrequencyShare)
+      })
     }
-    if (filters.maxFrequency) {
-      filtered = filtered.filter(item => item.frequency <= parseInt(filters.maxFrequency))
+    if (filters.maxFrequencyShare) {
+      filtered = filtered.filter(item => {
+        const frequencyShare = (item.frequency / totalFrequency) * 100
+        return frequencyShare <= parseFloat(filters.maxFrequencyShare)
+      })
     }
-    if (filters.minDuration) {
-      filtered = filtered.filter(item => item.duration >= parseFloat(filters.minDuration))
+    if (filters.minDurationShare) {
+      filtered = filtered.filter(item => {
+        const durationShare = (item.duration / totalDuration) * 100
+        return durationShare >= parseFloat(filters.minDurationShare)
+      })
     }
-    if (filters.maxDuration) {
-      filtered = filtered.filter(item => item.duration <= parseFloat(filters.maxDuration))
+    if (filters.maxDurationShare) {
+      filtered = filtered.filter(item => {
+        const durationShare = (item.duration / totalDuration) * 100
+        return durationShare <= parseFloat(filters.maxDurationShare)
+      })
     }
     if (filters.digestFilter) {
       filtered = filtered.filter(item => 
@@ -134,38 +150,50 @@ function App() {
           </div>
 
           <div className="filter-group">
-            <label>Frequency Range</label>
+            <label>Frequency Share Range (%)</label>
             <input 
               type="number" 
-              placeholder="Min frequency" 
-              value={filters.minFrequency}
-              onChange={(e) => handleFilterChange('minFrequency', e.target.value)}
+              placeholder="Min frequency %" 
+              value={filters.minFrequencyShare}
+              onChange={(e) => handleFilterChange('minFrequencyShare', e.target.value)}
               className="filter-input"
+              step="0.01"
+              min="0"
+              max="100"
             />
             <input 
               type="number" 
-              placeholder="Max frequency" 
-              value={filters.maxFrequency}
-              onChange={(e) => handleFilterChange('maxFrequency', e.target.value)}
+              placeholder="Max frequency %" 
+              value={filters.maxFrequencyShare}
+              onChange={(e) => handleFilterChange('maxFrequencyShare', e.target.value)}
               className="filter-input"
+              step="0.01"
+              min="0"
+              max="100"
             />
           </div>
 
           <div className="filter-group">
-            <label>Duration Range</label>
+            <label>Duration Share Range (%)</label>
             <input 
               type="number" 
-              placeholder="Min duration" 
-              value={filters.minDuration}
-              onChange={(e) => handleFilterChange('minDuration', e.target.value)}
+              placeholder="Min duration %" 
+              value={filters.minDurationShare}
+              onChange={(e) => handleFilterChange('minDurationShare', e.target.value)}
               className="filter-input"
+              step="0.01"
+              min="0"
+              max="100"
             />
             <input 
               type="number" 
-              placeholder="Max duration" 
-              value={filters.maxDuration}
-              onChange={(e) => handleFilterChange('maxDuration', e.target.value)}
+              placeholder="Max duration %" 
+              value={filters.maxDurationShare}
+              onChange={(e) => handleFilterChange('maxDurationShare', e.target.value)}
               className="filter-input"
+              step="0.01"
+              min="0"
+              max="100"
             />
           </div>
 
@@ -183,10 +211,10 @@ function App() {
           <button 
             className="apply-filters-btn"
             onClick={() => setFilters({
-              minFrequency: '',
-              maxFrequency: '',
-              minDuration: '',
-              maxDuration: '',
+              minFrequencyShare: '',
+              maxFrequencyShare: '',
+              minDurationShare: '',
+              maxDurationShare: '',
               digestFilter: ''
             })}
           >

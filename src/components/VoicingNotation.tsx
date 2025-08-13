@@ -25,6 +25,7 @@ export function VoicingNotation({ pcid, notes, showTitle = false }: MusicNotatio
         // Dynamic import for VexFlow
         const { Renderer, Stave, StaveNote, Voice, Formatter, Accidental } = await import('vexflow')
         
+        if (!svgRef.current) return // after await, could be gone
         // Clear previous content
         svgRef.current.innerHTML = ''
 
@@ -121,36 +122,36 @@ export function VoicingNotation({ pcid, notes, showTitle = false }: MusicNotatio
       } catch (error) {
         console.error('Error rendering music notation:', error)
         // Fallback to simple visualization
-        if (svgRef.current) {
-          if (isNotesMode && notes) {
-            svgRef.current.innerHTML = `
-              <div class="fallback-notation">
-                <h4>Notes: ${chordDisplayNames.join(' ')}</h4>
-                <div class="notes-list">
-                  ${notes.map(note => `
-                    <div class="note-item">
-                      MIDI ${note}
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-            `
-          } else {
-            svgRef.current.innerHTML = `
-              <div class="fallback-notation">
-                <h4>Chord: ${presentPitches.join(' ')}</h4>
-                <div class="pitch-circle">
-                  ${pitchClasses.map((pc, index) => `
-                    <div class="pitch-class ${pc.present ? 'present' : 'absent'}" 
-                         style="transform: rotate(${index * 30}deg) translate(50px) rotate(-${index * 30}deg)">
-                      ${pc.name.split('/')[0]}
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-            `
-          }
-        }
+        // if (svgRef.current) {
+        //   if (isNotesMode && notes) {
+        //     svgRef.current.innerHTML = `
+        //       <div class="fallback-notation">
+        //         <h4>Notes: ${chordDisplayNames.join(' ')}</h4>
+        //         <div class="notes-list">
+        //           ${notes.map(note => `
+        //             <div class="note-item">
+        //               MIDI ${note}
+        //             </div>
+        //           `).join('')}
+        //         </div>
+        //       </div>
+        //     `
+        //   } else {
+        //     svgRef.current.innerHTML = `
+        //       <div class="fallback-notation">
+        //         <h4>Chord: ${presentPitches.join(' ')}</h4>
+        //         <div class="pitch-circle">
+        //           ${pitchClasses.map((pc, index) => `
+        //             <div class="pitch-class ${pc.present ? 'present' : 'absent'}" 
+        //                  style="transform: rotate(${index * 30}deg) translate(50px) rotate(-${index * 30}deg)">
+        //               ${pc.name.split('/')[0]}
+        //             </div>
+        //           `).join('')}
+        //         </div>
+        //       </div>
+        //     `
+        //   }
+        // }
       }
     }
 

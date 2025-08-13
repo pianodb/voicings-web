@@ -57,6 +57,9 @@ export function MusicNotation({ pcid, showTitle }: MusicNotationProps) {
             }
         }
 
+        // Fixed x position for consistent layout regardless of accidentals
+        const fixedNoteX = 30 // Center the note horizontally
+
         if (noteKeys.length === 1) {
           // Single note
           const note = new StaveNote({
@@ -66,16 +69,29 @@ export function MusicNotation({ pcid, showTitle }: MusicNotationProps) {
           })
 
           // Add accidentals for flat notes
+          let accidental = null;
           if (noteKeys[0].includes('b')) {
-            note.addModifier(new Accidental('b'), 0)
+            accidental = new Accidental('b');
           } else if (noteKeys[0].includes('#')) {
-            note.addModifier(new Accidental('#'), 0)
+            accidental = new Accidental('#');
+          }
+          if (accidental) {
+            note.addModifier(accidental, 0);
           }
 
           const voice = new Voice({ num_beats: 4, beat_value: 4 })
           voice.addTickable(note)
 
+          // Format without automatic positioning
           new Formatter().joinVoices([voice]).format([voice], width - 40)
+          
+          // Manually set the x position to ensure consistency
+          const neededXShift = fixedNoteX - note.getAbsoluteX()
+          note.setXShift(neededXShift)
+          if (accidental) {
+            accidental.setXShift(neededXShift)
+          }
+          
           voice.draw(context, stave)
         } else {
           // Chord
@@ -86,18 +102,35 @@ export function MusicNotation({ pcid, showTitle }: MusicNotationProps) {
           })
 
           // Add accidentals for flat notes
+          let accidentals: any[] = [];
           noteKeys.forEach((key, index) => {
             if (key.includes('b')) {
-              chord.addModifier(new Accidental('b'), index)
+              let accidental = new Accidental('b');
+              chord.addModifier(accidental, index)
+              accidentals.push(accidental);
             } else if (key.includes('#')) {
-              chord.addModifier(new Accidental('#'), index)
+              let accidental = new Accidental('#');
+              chord.addModifier(accidental, index)
+              accidentals.push(accidental);
             }
           })
 
           const voice = new Voice({ num_beats: 4, beat_value: 4 })
           voice.addTickable(chord)
 
+          // Format without automatic positioning
           new Formatter().joinVoices([voice]).format([voice], width - 40)
+          
+          // Manually set the x position to ensure consistency
+          const neededXShift = fixedNoteX - chord.getAbsoluteX()
+          chord.setXShift(neededXShift)
+          for (const accidental of accidentals) {
+            // accidental.setXShift(neededXShift)
+            // const accX = accidental;
+            const curXShift = accidental.getXShift();
+            accidental.setXShift(-neededXShift - curXShift)
+          }
+
           voice.draw(context, stave)
         }
       } catch (error) {

@@ -54,7 +54,7 @@ export function VoicingNotation({ pcid, notes, showTitle = false }: MusicNotatio
           // Convert MIDI notes (0-88) to VexFlow notation
           noteKeys = notes!.map(midiNote => {
             const noteNames = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
-            const octave = Math.floor((midiNote + 12) / 12)
+            const octave = Math.floor((midiNote) / 12)
             const noteName = noteNames[midiNote % 12]
             return `${noteName}/${octave}`
           })

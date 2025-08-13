@@ -114,6 +114,8 @@ export function VoicingDetail() {
           </div>
           <nav className="nav">
             <span className="nav-item" onClick={() => navigate('/chords')}>Chords</span>
+            <span className="nav-item disabled" onClick={() => navigate(`/voicings/${pcid}`)}>Voicings</span>
+            <span className="nav-item" onClick={() => navigate('/search')}>Search</span>
             <span className="nav-item active">Voicing Detail</span>
             <span className="nav-item" onClick={() => navigate('/about')}>About</span>
             <span className="nav-item" onClick={() => navigate('/contact')}>Contact</span>
@@ -178,7 +180,7 @@ export function VoicingDetail() {
               </div>
 
               <VoicingNotation 
-                notes={voicingAnalysis?.notes.map(n => n + 36)} 
+                notes={voicingAnalysis?.notes.map(n => n + 48)} 
               />
             </div>
           </div>

@@ -14,7 +14,8 @@ export function Contact() {
           </div>
           <nav className="nav">
             <span className="nav-item" onClick={() => navigate('/')}>Chords</span>
-            <span className="nav-item disabled">Voicings</span>
+            <span className="nav-item disabled" onClick={() => navigate('/')}>Voicings</span>
+            <span className="nav-item" onClick={() => navigate('/search')}>Search</span>
             <span className="nav-item" onClick={() => navigate('/about')}>About</span>
             <span className="nav-item active">Contact</span>
           </nav>

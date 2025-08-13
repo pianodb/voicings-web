@@ -5,6 +5,7 @@ import './index.css'
 import { VoicingDetail } from './components/VoicingDetail.tsx'
 import { PitchClassDatabase } from './components/ChordBrowser.tsx'
 import { VoicingsByPcid } from './components/VoicingBrowser.tsx'
+import { Search } from './components/Search.tsx'
 import { About } from './components/About.tsx'
 import { Contact } from './components/Contact.tsx'
 
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/chords" element={<PitchClassDatabase />} />
         <Route path="/voicings/:pcid" element={<VoicingsByPcid />} />
         <Route path="/voicing/:pcid/:digest" element={<VoicingDetail />} />
+        <Route path="/search" element={<Search />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>

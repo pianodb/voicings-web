@@ -132,6 +132,7 @@ export function VoicingsByPcid() {
           <nav className="nav">
             <span className="nav-item" onClick={() => navigate('/chords')}>Chords</span>
             <span className="nav-item active">Voicings</span>
+            <span className="nav-item" onClick={() => navigate('/search')}>Search</span>
             <span className="nav-item" onClick={() => navigate('/about')}>About</span>
             <span className="nav-item" onClick={() => navigate('/contact')}>Contact</span>
           </nav>
@@ -287,7 +288,7 @@ export function VoicingsByPcid() {
                           <td>{item.duration.toLocaleString()}</td>
                           <td>
                             <VoicingNotation 
-                            notes={parseDigest?.notes.map(n => n + 36)} 
+                            notes={parseDigest?.notes.map(n => n + 48)} 
                             />
                           </td>
                           <td>{frequencyPercent}%</td>

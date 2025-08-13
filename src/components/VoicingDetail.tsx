@@ -127,7 +127,7 @@ export function VoicingDetail() {
         <div className="detail-container">
           <div className="detail-header">
             <button onClick={() => navigate(`/voicings/${pcid}`)} className="back-link">
-              ← Back to voicings
+              ← Back to Voicings for {pcid}
             </button>
             <h1>Voicing: {voicing.digest}</h1>
           </div>

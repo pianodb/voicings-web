@@ -126,7 +126,8 @@ export function Search() {
   }
 
   const handlePcidClick = (pcid: number) => {
-    navigate(`/voicings/${pcid}`)
+    // navigate(`/voicings/${pcid}`)
+    window.open(`/voicings/${pcid}`, '_blank')
   }
 
   const userPcid = calculatePcidFromMidiNotes(selectedNotes)
@@ -298,7 +299,10 @@ export function Search() {
                             <td>
                               <button 
                                 className="view-voicing-btn"
-                                onClick={() => navigate(`/voicing/${userEntry.pcid}/${encodeURIComponent(userEntry.digest)}`)}
+                                onClick={() => window.open(
+                                  `/voicing/${userEntry.pcid}/${encodeURIComponent(userEntry.digest)}`,
+                                  '_blank'
+                                )}
                               >
                                 View Detail
                               </button>

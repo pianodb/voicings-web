@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getPresentPitches, analyzeVoicing, getNotesFromDigest } from '../utils/pitchClass'
+import { getPresentPitches, getNotesFromDigest } from '../utils/pitchClass'
 import { MusicNotation } from './MusicNotation'
 import axios from 'axios'
 import { VoicingNotation } from './VoicingNotation'
@@ -264,10 +264,8 @@ export function VoicingsByPcid() {
                       const frequencyPercent = ((item.frequency / totalFrequency) * 100).toFixed(2)
                       const durationPercent = ((item.duration / totalDuration) * 100).toFixed(2)
                       
-                      let voicingAnalysis = null
                       let parseDigest = null
                       try {
-                        voicingAnalysis = analyzeVoicing(item.digest)
                         parseDigest = getNotesFromDigest(item.digest)
                       } catch (error) {
                         console.error('Error analyzing voicing:', error)
@@ -283,14 +281,8 @@ export function VoicingsByPcid() {
                             {item.digest}
                           </td>
                           <td className="note-names">
-                            {voicingAnalysis ? voicingAnalysis.noteNames.join(' ') : 'Error parsing'}
+                            {parseDigest ? parseDigest.noteNames.join(' ') : 'Error parsing'}
                           </td>
-                          {/* <td className="note-count">
-                            {voicingAnalysis ? voicingAnalysis.noteCount : '—'}
-                          </td>
-                          <td className="span-info">
-                            {voicingAnalysis ? voicingAnalysis.span : '—'}
-                          </td> */}
                           <td>{item.frequency.toLocaleString()}</td>
                           <td>{item.duration.toLocaleString()}</td>
                           <td>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { VoicingNotation } from './VoicingNotation'
-import { getNotesFromDigest, analyzeVoicing } from '../utils/pitchClass'
+import { getNotesFromDigest } from '../utils/pitchClass'
 
 interface VoicingData {
   voicing_id: number
@@ -81,7 +81,6 @@ export function VoicingDetail() {
 
   // Analyze the voicing from digest
   const noteInfo = getNotesFromDigest(voicing.digest)
-  const voicingAnalysis = analyzeVoicing(voicing.digest)
 
   return (
     <div className="app">
@@ -202,11 +201,11 @@ export function VoicingDetail() {
                   <div className="voicing-stats">
                     <div className="stat-row">
                       <span className="stat-label">Note Count:</span>
-                      <span className="stat-value">{voicingAnalysis.noteCount}</span>
+                      <span className="stat-value">{noteInfo.notes.length}</span>
                     </div>
                     <div className="stat-row">
                       <span className="stat-label">Span:</span>
-                      <span className="stat-value">{voicingAnalysis.span}</span>
+                      <span className="stat-value">{noteInfo.span}</span>
                     </div>
                     <div className="stat-row">
                       <span className="stat-label">Lowest Note:</span>
@@ -221,7 +220,7 @@ export function VoicingDetail() {
                   <div className="note-list">
                     <h4>Notes in Voicing:</h4>
                     <div className="notes-grid">
-                      {voicingAnalysis.noteNames.map((noteName, index) => (
+                      {noteInfo.noteNames.map((noteName, index) => (
                         <span key={index} className="note-badge">
                           {noteName}
                         </span>
@@ -232,7 +231,7 @@ export function VoicingDetail() {
                   <div className="pitch-classes">
                     <h4>Pitch Classes:</h4>
                     <div className="pitch-classes-grid">
-                      {voicingAnalysis.pitchClasses.map((pc, index) => (
+                      {noteInfo.pitchClasses.map((pc, index) => (
                         <span key={index} className="pitch-class-badge">
                           {pc}
                         </span>
@@ -240,18 +239,6 @@ export function VoicingDetail() {
                     </div>
                   </div>
 
-                  {voicingAnalysis.intervals.length > 0 && (
-                    <div className="intervals">
-                      <h4>Intervals:</h4>
-                      <div className="intervals-grid">
-                        {voicingAnalysis.intervalNames.map((interval, index) => (
-                          <span key={index} className="interval-badge">
-                            {interval} ({voicingAnalysis.intervals[index]}st)
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>

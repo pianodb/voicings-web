@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { analyzeVoicing, getNotesFromDigest } from '../utils/pitchClass'
+import { getNotesFromDigest, type NoteInfo } from '../utils/pitchClass'
+import { VoicingNotation } from './VoicingNotation'
 
 interface VoicingData {
   voicing_id: number
@@ -10,13 +11,14 @@ interface VoicingData {
   digest: string
 }
 
+
 export function VoicingDetailDigest() {
   const { pcid, digest } = useParams<{ pcid: string; digest: string }>()
   const navigate = useNavigate()
   const [voicing, setVoicing] = useState<VoicingData | null>(null)
   const [allVoicings, setAllVoicings] = useState<VoicingData[]>([])
   const [loading, setLoading] = useState(true)
-  const [voicingAnalysis, setVoicingAnalysis] = useState<any>(null)
+  const [voicingAnalysis, setVoicingAnalysis] = useState<NoteInfo | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,9 +49,8 @@ export function VoicingDetailDigest() {
         // Analyze the voicing
         if (foundVoicing) {
           try {
-            const analysis = analyzeVoicing(decodedDigest)
             const noteInfo = getNotesFromDigest(decodedDigest)
-            setVoicingAnalysis({ ...analysis, ...noteInfo })
+            setVoicingAnalysis({ ...noteInfo })
           } catch (error) {
             console.error('Error analyzing voicing:', error)
           }
@@ -120,7 +121,7 @@ export function VoicingDetailDigest() {
           <div className="detail-sidebar">
             <nav className="detail-nav">
               <div className="nav-item active">Overview</div>
-              <div className="nav-item">Note Analysis</div>
+              <div className="nav-item disabled">Note Analysis</div>
             </nav>
           </div>
 
@@ -158,66 +159,9 @@ export function VoicingDetailDigest() {
                 </div>
               </div>
 
-              {/* {voicingAnalysis && (
-                <div className="analysis-section">
-                  <h3>Note Analysis</h3>
-                  
-                  <div className="note-info-grid">
-                    <div className="info-item">
-                      <span className="info-label">Notes</span>
-                      <span className="info-value note-sequence">{voicingAnalysis.noteNames.join(' ')}</span>
-                    </div>
-                    
-                    <div className="info-item">
-                      <span className="info-label">Note Count</span>
-                      <span className="info-value">{voicingAnalysis.noteCount}</span>
-                    </div>
-                    
-                    <div className="info-item">
-                      <span className="info-label">Span</span>
-                      <span className="info-value">{voicingAnalysis.span}</span>
-                    </div>
-                    
-                    <div className="info-item">
-                      <span className="info-label">Pitch Classes</span>
-                      <span className="info-value">{voicingAnalysis.pitchClasses.join(' ')}</span>
-                    </div>
-                    
-                    <div className="info-item">
-                      <span className="info-label">Lowest Note</span>
-                      <span className="info-value">{voicingAnalysis.noteNames[0]}</span>
-                    </div>
-                    
-                    <div className="info-item">
-                      <span className="info-label">Highest Note</span>
-                      <span className="info-value">{voicingAnalysis.noteNames[voicingAnalysis.noteNames.length - 1]}</span>
-                    </div>
-                  </div>
-
-                  <div className="intervals-section">
-                    <h4>Intervals</h4>
-                    <div className="intervals-grid">
-                      {voicingAnalysis.intervalNames.map((intervalName: string, index: number) => (
-                        <div key={index} className="interval-item">
-                          <span className="interval-name">{intervalName}</span>
-                          <span className="interval-semitones">({voicingAnalysis.intervals[index]} st)</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="notation-section">
-                    <h4>Musical Information</h4>
-                    <div className="voicing-notation">
-                      <div className="notation-info">
-                        <p><strong>Voicing:</strong> {voicingAnalysis.noteNames.join(' - ')}</p>
-                        <p><strong>MIDI Notes:</strong> {voicingAnalysis.notes.join(', ')}</p>
-                        <p><strong>Note Intervals:</strong> {voicingAnalysis.intervalNames.join(', ')}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )} */}
+              <VoicingNotation 
+                notes={voicingAnalysis?.notes.map(n => n + 36)} 
+              />
             </div>
           </div>
         </div>

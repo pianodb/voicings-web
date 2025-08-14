@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getPresentPitches, getNotesFromDigest, calculateInversions } from '../utils/pitchClass'
 import { MusicNotation } from './MusicNotation'
+import { Header } from './Header'
 import axios from 'axios'
 import { VoicingNotation } from './VoicingNotation'
 
@@ -145,21 +146,7 @@ export function VoicingsByPcid() {
 
   return (
     <div className="app">
-      <header className="header">
-        <div className="header-content">
-          <div className="logo">
-            <div className="logo-icon">🎵</div>
-            <h1>PianoDB Voicings</h1>
-          </div>
-          <nav className="nav">
-            <span className="nav-item" onClick={() => navigate('/chords')}>Chords</span>
-            <span className="nav-item active">Voicings</span>
-            <span className="nav-item" onClick={() => navigate('/search')}>Search</span>
-            <span className="nav-item" onClick={() => navigate('/about')}>About</span>
-            <span className="nav-item" onClick={() => navigate('/contact')}>Contact</span>
-          </nav>
-        </div>
-      </header>
+      <Header activeItem="Voicings" />
 
       <div className="main-content">
         <aside className="sidebar">

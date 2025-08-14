@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getPresentPitches, pcidToBinary } from '../utils/pitchClass'
+import { getPresentPitches } from '../utils/pitchClass'
 import { MusicNotation } from './MusicNotation'
+import { Header } from './Header'
 import csvData from '../assets/most_popular_cls_packed.csv?raw'
 
 interface PitchClassData {
@@ -15,8 +16,8 @@ export function PitchClassDatabase() {
   const [pitchClassData, setPitchClassData] = useState<PitchClassData[]>([])
   const [filteredData, setFilteredData] = useState<PitchClassData[]>([])
   const [loading, setLoading] = useState(true)
-  const [currentPage, setCurrentPage] = useState(1)
   const [selectedPcid, setSelectedPcid] = useState<number | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
   const [filters, setFilters] = useState({
     minFrequencyShare: '',
     maxFrequencyShare: '',
@@ -127,21 +128,7 @@ export function PitchClassDatabase() {
 
   return (
     <div className="app">
-      <header className="header">
-        <div className="header-content">
-          <div className="logo">
-            <div className="logo-icon">🎵</div>
-            <h1>PianoDB Voicings</h1>
-          </div>
-          <nav className="nav">
-            <span className="nav-item active">Chords</span>
-            <span className="nav-item disabled" onClick={() => navigate('/')}>Voicings</span>
-            <span className="nav-item" onClick={() => navigate('/search')}>Search</span>
-            <span className="nav-item" onClick={() => navigate('/about')}>About</span>
-            <span className="nav-item" onClick={() => navigate('/contact')}>Contact</span>
-          </nav>
-        </div>
-      </header>
+      <Header activeItem="Chords" />
 
       <div className="main-content">
         <aside className="sidebar">

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { getNotesFromDigest, type NoteInfo } from '../utils/pitchClass'
 import { VoicingNotation } from './VoicingNotation'
+import { Header } from './Header'
 
 interface VoicingData {
   voicing_id: number
@@ -106,22 +107,10 @@ export function VoicingDetail() {
 
   return (
     <div className="app">
-      <header className="header">
-        <div className="header-content">
-          <div className="logo">
-            <div className="logo-icon">🎵</div>
-            <h1>PianoDB Voicings</h1>
-          </div>
-          <nav className="nav">
-            <span className="nav-item" onClick={() => navigate('/chords')}>Chords</span>
-            <span className="nav-item disabled" onClick={() => navigate(`/voicings/${pcid}`)}>Voicings</span>
-            <span className="nav-item" onClick={() => navigate('/search')}>Search</span>
-            <span className="nav-item active">Voicing Detail</span>
-            <span className="nav-item" onClick={() => navigate('/about')}>About</span>
-            <span className="nav-item" onClick={() => navigate('/contact')}>Contact</span>
-          </nav>
-        </div>
-      </header>
+      <Header 
+        activeItem="Voicing Detail" 
+        customVoicingsClick={() => navigate(`/voicings/${pcid}`)}
+      />
 
       <div className="main-content">
         <div className="detail-container">

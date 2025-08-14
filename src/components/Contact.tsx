@@ -1,26 +1,10 @@
-import { useNavigate } from 'react-router-dom'
+import { Header } from './Header'
 import '../App.css'
 
 export function Contact() {
-  const navigate = useNavigate()
-
   return (
     <div className="app">
-      <header className="header">
-        <div className="header-content">
-          <div className="logo">
-            <div className="logo-icon">🎵</div>
-            <h1>PianoDB Voicings</h1>
-          </div>
-          <nav className="nav">
-            <span className="nav-item" onClick={() => navigate('/')}>Chords</span>
-            <span className="nav-item disabled" onClick={() => navigate('/')}>Voicings</span>
-            <span className="nav-item" onClick={() => navigate('/search')}>Search</span>
-            <span className="nav-item" onClick={() => navigate('/about')}>About</span>
-            <span className="nav-item active">Contact</span>
-          </nav>
-        </div>
-      </header>
+      <Header activeItem="Contact" />
 
       <div className="main-content">
         <main className="content contact-content">

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { getPresentPitches, PITCH_CLASSES, packNotes } from '../utils/pitchClass'
 import { MusicNotation } from './MusicNotation'
 import { Piano } from './Piano'
+import { Header } from './Header'
 import csvData from '../assets/most_popular_cls_packed.csv?raw'
 import { VoicingNotation } from './VoicingNotation'
 
@@ -13,7 +13,6 @@ interface PitchClassData {
 }
 
 export function Search() {
-  const navigate = useNavigate()
   const [pitchClassData, setPitchClassData] = useState<PitchClassData[]>([])
   const [selectedNotes, setSelectedNotes] = useState<Set<number>>(new Set())
   const [searchResults, setSearchResults] = useState<PitchClassData[]>([])
@@ -185,21 +184,7 @@ export function Search() {
   if (loading) {
     return (
       <div className="app">
-        <header className="header">
-          <div className="header-content">
-            <div className="logo">
-              <div className="logo-icon">🎵</div>
-              <h1>PianoDB Voicings</h1>
-            </div>
-            <nav className="nav">
-              <span className="nav-item" onClick={() => navigate('/chords')}>Chords</span>
-              <span className="nav-item disabled" onClick={() => navigate('/')}>Voicings</span>
-              <span className="nav-item active">Search</span>
-              <span className="nav-item" onClick={() => navigate('/about')}>About</span>
-              <span className="nav-item" onClick={() => navigate('/contact')}>Contact</span>
-            </nav>
-          </div>
-        </header>
+        <Header activeItem="Search" />
         <div className="loading">Loading...</div>
       </div>
     )
@@ -207,21 +192,7 @@ export function Search() {
 
   return (
     <div className="app">
-      <header className="header">
-        <div className="header-content">
-          <div className="logo">
-            <div className="logo-icon">🎵</div>
-            <h1>PianoDB Voicings</h1>
-          </div>
-          <nav className="nav">
-            <span className="nav-item" onClick={() => navigate('/chords')}>Chords</span>
-            <span className="nav-item disabled" onClick={() => navigate('/')}>Voicings</span>
-            <span className="nav-item active">Search</span>
-            <span className="nav-item" onClick={() => navigate('/about')}>About</span>
-            <span className="nav-item" onClick={() => navigate('/contact')}>Contact</span>
-          </nav>
-        </div>
-      </header>
+      <Header activeItem="Search" />
 
       <div className="main-content">
         <main className="content search-content">
@@ -282,7 +253,6 @@ export function Search() {
                         const userEntry = getUserVoicingEntry()
                         if (!userEntry) return null
                         
-                        const pitches = getPresentPitches(userEntry.pcid)
                         const sortedNotes = Array.from(selectedNotes).sort((a, b) => a - b)
                         const noteNames = sortedNotes.map(note => getMidiNoteDisplay(note))
                         

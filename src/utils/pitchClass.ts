@@ -190,3 +190,33 @@ export function getNotesFromDigest(digest: string): NoteInfo {
   }
 }
 
+/**
+ * Calculate all inversions of a chord given a PCID
+ * Returns an array of objects with the new PCID and inversion info
+ */
+export function calculateInversions(pcid: number): Array<{pcid: number, inversion: number, rootNote: string}> {
+  const pitchClasses = unpackPitchClass(pcid)
+  const inversions: Array<{pcid: number, inversion: number, rootNote: string}> = []
+  
+  // For each pitch class in the chord, create an inversion with that note as root
+  pitchClasses.forEach((rootPitchClass, index) => {
+    // Create new pitch class array with this note as root (0)
+    const invertedPitches = pitchClasses.map(pc => {
+      let newPc = pc - rootPitchClass
+      if (newPc < 0) newPc += 12 // Wrap around the octave
+      return newPc
+    }).sort((a, b) => a - b)
+    
+    // Convert back to PCID
+    const newPcid = packPitchClass(invertedPitches)
+    
+    inversions.push({
+      pcid: newPcid,
+      inversion: index,
+      rootNote: PITCH_CLASSES[rootPitchClass].name
+    })
+  })
+  
+  return inversions
+}
+

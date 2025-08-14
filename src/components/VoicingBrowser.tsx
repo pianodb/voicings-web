@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getPresentPitches, getNotesFromDigest } from '../utils/pitchClass'
+import { getPresentPitches, getNotesFromDigest, calculateInversions } from '../utils/pitchClass'
 import { MusicNotation } from './MusicNotation'
 import axios from 'axios'
 import { VoicingNotation } from './VoicingNotation'
@@ -148,6 +148,22 @@ export function VoicingsByPcid() {
               <p><strong>Binary:</strong> {pcidNumber.toString(2).padStart(12, '0')}</p>
             </div>
             <MusicNotation pcid={pcidNumber}/>
+            
+            <div className="inversions-section">
+              <h4>Inversions</h4>
+              {/* <div className="inversions-grid"> */}
+              <ul>
+                {calculateInversions(pcidNumber).map((inversion) => (
+                  <li
+                    className={`inversion-link ${inversion.pcid === pcidNumber ? 'most-popular' : ''}`}
+                    onClick={() => navigate(`/voicings/${inversion.pcid}`)}
+                    title={`${inversion.rootNote} inversion (PCID ${inversion.pcid})${inversion.pcid === pcidNumber ? ' - Current' : ''}`}
+                  >
+                    {inversion.rootNote} ({inversion.pcid}){inversion.pcid === pcidNumber ? ' ★' : ''}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
           
           <div className="filter-section">
@@ -276,7 +292,7 @@ export function VoicingsByPcid() {
                         <tr key={item.digest}>
                           <td 
                             className="voicing-id" 
-                            onClick={() => navigate(`/voicing/${pcid}/${encodeURIComponent(item.digest)}`)}
+                            onClick={() => navigate(`/voicings/${pcid}/${encodeURIComponent(item.digest)}`)}
                             title="Click to view detailed analysis"
                           >
                             {item.digest}

@@ -300,7 +300,7 @@ export function Search() {
                               <button 
                                 className="view-voicing-btn"
                                 onClick={() => window.open(
-                                  `/voicing/${userEntry.pcid}/${encodeURIComponent(userEntry.digest)}`,
+                                  `/voicings/${userEntry.pcid}/${encodeURIComponent(userEntry.digest)}`,
                                   '_blank'
                                 )}
                               >

@@ -16,7 +16,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<PitchClassDatabase />} />
         <Route path="/chords" element={<PitchClassDatabase />} />
         <Route path="/voicings/:pcid" element={<VoicingsByPcid />} />
-        <Route path="/voicing/:pcid/:digest" element={<VoicingDetail />} />
+        <Route path="/voicings/:pcid/:digest" element={<VoicingDetail />} />
         <Route path="/search" element={<Search />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />

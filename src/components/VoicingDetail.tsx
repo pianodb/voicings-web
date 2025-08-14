@@ -4,6 +4,7 @@ import axios from 'axios'
 import { getNotesFromDigest, type NoteInfo } from '../utils/pitchClass'
 import { VoicingNotation } from './VoicingNotation'
 import { Header } from './Header'
+import { getApiUrl } from '../config/api'
 
 interface VoicingData {
   voicing_id: number
@@ -28,7 +29,7 @@ export function VoicingDetail() {
       setLoading(true)
       try {
         const decodedDigest = decodeURIComponent(digest)
-        const response = await axios.get(`/api/${pcid}.csv`)
+        const response = await axios.get(getApiUrl(`${pcid}.csv`))
         const lines = response.data.split('\n')
         
         const data: VoicingData[] = lines.slice(1)

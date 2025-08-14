@@ -5,6 +5,7 @@ import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
 import axios from 'axios'
 import { VoicingNotation } from './VoicingNotation'
+import { getApiUrl } from '../config/api'
 
 interface VoicingData {
   voicing_id: number
@@ -40,7 +41,7 @@ export function VoicingsByPcid() {
 
       setLoading(true)
       try {
-        const response = await axios.get(`/api/${pcid}.csv`)
+        const response = await axios.get(getApiUrl(`${pcid}.csv`))
         const lines = response.data.split('\n')
         
         const data: VoicingData[] = lines.slice(1)

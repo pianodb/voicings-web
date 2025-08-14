@@ -67,7 +67,10 @@ export function Contact() {
             <div className="faq-item">
               <h4>How can I download the raw data?</h4>
               <p>
-                We recommend downloading the entire dataset through huggingface: <a href="https://huggingface.co/datasets/conjuncts/voicings" target="_blank" rel="noopener noreferrer">conjuncts/voicings</a>
+                We recommend downloading the entire dataset through
+                huggingface:
+                &nbsp;<a href="https://huggingface.co/datasets/conjuncts/voicings-rel" target="_blank" rel="noopener noreferrer">conjuncts/voicings-rel</a> 
+                &nbsp;and <a href="https://huggingface.co/datasets/conjuncts/voicings" target="_blank" rel="noopener noreferrer">conjuncts/voicings</a>.
               </p>
             </div>
 

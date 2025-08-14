@@ -24,7 +24,9 @@ export function VoicingsByPcid() {
     maxFrequencyShare: '',
     minDurationShare: '',
     maxDurationShare: '',
-    digestFilter: ''
+    digestFilter: '',
+    minPitches: '',
+    maxPitches: ''
   })
 
   const itemsPerPage = 15
@@ -99,6 +101,26 @@ export function VoicingsByPcid() {
       filtered = filtered.filter(item => 
         item.digest.toLowerCase().includes(filters.digestFilter.toLowerCase())
       )
+    }
+    if (filters.minPitches) {
+      filtered = filtered.filter(item => {
+        try {
+          const parseDigest = getNotesFromDigest(item.digest)
+          return parseDigest.notes.length >= parseInt(filters.minPitches)
+        } catch (error) {
+          return false
+        }
+      })
+    }
+    if (filters.maxPitches) {
+      filtered = filtered.filter(item => {
+        try {
+          const parseDigest = getNotesFromDigest(item.digest)
+          return parseDigest.notes.length <= parseInt(filters.maxPitches)
+        } catch (error) {
+          return false
+        }
+      })
     }
 
     setFilteredData(filtered)
@@ -228,6 +250,28 @@ export function VoicingsByPcid() {
               />
             </div>
 
+            <div className="filter-group">
+              <label>Number of Pitches</label>
+              <input 
+                type="number" 
+                placeholder="Min pitches" 
+                value={filters.minPitches}
+                onChange={(e) => handleFilterChange('minPitches', e.target.value)}
+                className="filter-input"
+                min="1"
+                max="20"
+              />
+              <input 
+                type="number" 
+                placeholder="Max pitches" 
+                value={filters.maxPitches}
+                onChange={(e) => handleFilterChange('maxPitches', e.target.value)}
+                className="filter-input"
+                min="1"
+                max="20"
+              />
+            </div>
+
             <button 
               className="apply-filters-btn"
               onClick={() => setFilters({
@@ -235,7 +279,9 @@ export function VoicingsByPcid() {
                 maxFrequencyShare: '',
                 minDurationShare: '',
                 maxDurationShare: '',
-                digestFilter: ''
+                digestFilter: '',
+                minPitches: '',
+                maxPitches: ''
               })}
             >
               Clear filters

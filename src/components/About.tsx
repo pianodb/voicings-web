@@ -76,7 +76,13 @@ export function About() {
               Our analysis is based on the <a href="https://arxiv.org/abs/2504.15071">Aria-MIDI dataset (2025)</a>, a corpus of over one million MIDI files. Our analysis includes multiple genres, including classical, jazz, and contemporary music, though there is a strong focus on classical piano repertoire. Unique chords (those found less than 10 times) are excluded.
             </p>
             <p>
-              We release the data under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">CC BY-NC-SA-4.0</a>. We make the data available through <a href="https://huggingface.co/datasets/conjuncts/voicings">huggingface</a>.
+              We release the data under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">CC BY-NC-SA-4.0</a>.
+            </p>
+            <p>
+              We recommend downloading the entire dataset through
+              huggingface:
+              &nbsp;<a href="https://huggingface.co/datasets/conjuncts/voicings-rel" target="_blank" rel="noopener noreferrer">conjuncts/voicings-rel</a> 
+              &nbsp; and <a href="https://huggingface.co/datasets/conjuncts/voicings" target="_blank" rel="noopener noreferrer">conjuncts/voicings</a>.
             </p>
           </div>
 

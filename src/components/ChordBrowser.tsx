@@ -16,7 +16,7 @@ export function PitchClassDatabase() {
   const [pitchClassData, setPitchClassData] = useState<PitchClassData[]>([])
   const [filteredData, setFilteredData] = useState<PitchClassData[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedPcid, setSelectedPcid] = useState<number | null>(null)
+  const [_selectedPcid, setSelectedPcid] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [filters, setFilters] = useState({
     minFrequencyShare: '',
@@ -132,13 +132,6 @@ export function PitchClassDatabase() {
 
       <div className="main-content">
         <aside className="sidebar">
-        
-          {/* {selectedPcid && (
-            <div className="visualization-panel">
-              <h4>Pitch Class Visualization</h4>
-              <MusicNotation pcid={selectedPcid} />
-            </div>
-          )} */}
 
           <h3>Filters</h3>
           

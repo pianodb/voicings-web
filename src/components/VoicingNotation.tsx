@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { pcidToPitchClasses, getPresentPitches, unpackPitchClass } from '../utils/pitchClass'
+import { getPresentPitches, unpackPitchClass } from '../utils/pitchClass'
 
 interface MusicNotationProps {
   pcid?: number
@@ -14,7 +14,6 @@ export function VoicingNotation({ pcid, notes, showTitle = false }: MusicNotatio
   const isNotesMode = notes && notes.length > 0
   const effectivePcid = isNotesMode ? 0 : (pcid ?? 0)
   
-  const pitchClasses = isNotesMode ? [] : pcidToPitchClasses(effectivePcid)
   const presentPitches = isNotesMode ? [] : getPresentPitches(effectivePcid)
 
   useEffect(() => {

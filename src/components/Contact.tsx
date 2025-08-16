@@ -80,6 +80,7 @@ export function Contact() {
             </p>
             <ul>
               <li>Louis Bradshaw, Simon Colton for Aria-MIDI, without which this project would not be possible</li>
+              <li>0xfe for <a href="https://github.com/0xfe/vexflow">vexflow</a>, the javascript music engraving library</li>
               <li>All musicians who have shared their recordings for analysis!</li>
             </ul>
           </div>

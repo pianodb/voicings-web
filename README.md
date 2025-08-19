@@ -1,5 +1,6 @@
 TODO:
 
+- https://developers.cloudflare.com/workers/static-assets/routing/single-page-application/
 - Fix file serving
 - Forte number and other identifiers
 - Use common names. Data from: https://en.wikipedia.org/wiki/List_of_set_classes

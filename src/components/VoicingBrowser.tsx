@@ -9,7 +9,6 @@ import { VoicingNotation } from './VoicingNotation'
 import { getApiUrl } from '../config/api'
 
 interface VoicingData {
-  voicing_id: number
   frequency: number
   duration: number
   digest: string
@@ -56,10 +55,10 @@ export function VoicingsByPcid() {
           .map((line: string) => {
             const values = line.split(',')
             return {
-              voicing_id: parseInt(values[0]),
-              frequency: parseInt(values[1]),
-              duration: parseFloat(values[2]),
-              digest: values[3]
+              // voicing_id: parseInt(values[0]),
+              frequency: parseInt(values[0]),
+              duration: parseFloat(values[1]),
+              digest: values[2]
             }
           })
         

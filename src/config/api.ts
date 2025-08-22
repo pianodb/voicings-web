@@ -6,7 +6,7 @@ const getApiBaseUrl = (): string => {
   }
   
   // In production, use the CDN directly
-  return 'https://cdn-voicings.pianodb.org'
+  return 'https://cdn.pianodb.org/voicings/v1'
 }
 
 export const API_BASE_URL = getApiBaseUrl()

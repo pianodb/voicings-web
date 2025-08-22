@@ -84,7 +84,7 @@ export function packPitchClass(notes: number[]): number {
     if (note === 0) {
       continue // skip 0: root is always assumed
     }
-    packed |= (1 << (note - 1))
+    packed |= (1 << (11 - note))
   }
   return packed
 }
@@ -98,7 +98,7 @@ export function unpackPitchClass(pcid: number): number[] {
   }
   const notes = [0] // always include root
   for (let i = 1; i < 12; i++) {
-    if (pcid & (1 << (i - 1))) {
+    if (pcid & (1 << (11 - i))) {
       notes.push(i)
     }
   }

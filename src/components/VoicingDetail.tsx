@@ -8,7 +8,6 @@ import { Header } from './Header'
 import { getApiUrl } from '../config/api'
 
 interface VoicingData {
-  voicing_id: number
   frequency: number
   duration: number
   digest: string
@@ -44,10 +43,9 @@ export function VoicingDetail() {
           .map((line: string) => {
             const values = line.split(',')
             return {
-              voicing_id: parseInt(values[0]),
-              frequency: parseInt(values[1]),
-              duration: parseFloat(values[2]),
-              digest: values[3]
+              frequency: parseInt(values[0]),
+              duration: parseFloat(values[1]),
+              digest: values[2]
             }
           })
         
@@ -138,11 +136,11 @@ export function VoicingDetail() {
   // Calculate rank for frequency and duration
   const frequencyRank = allVoicings
     .sort((a, b) => b.frequency - a.frequency)
-    .findIndex(v => v.voicing_id === voicing.voicing_id) + 1;
+    .findIndex(v => v.digest === voicing.digest) + 1;
 
   const durationRank = allVoicings
     .sort((a, b) => b.duration - a.duration)
-    .findIndex(v => v.voicing_id === voicing.voicing_id) + 1;
+    .findIndex(v => v.digest === voicing.digest) + 1;
 
   // Get pitch class set
   const pitchClassSet = voicingAnalysis?.pitchClasses;

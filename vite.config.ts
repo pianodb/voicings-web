@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://cdn-voicings.pianodb.org',
+        target: 'https://cdn.pianodb.org/voicings/v1',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         secure: true

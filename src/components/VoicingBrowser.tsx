@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getPresentPitches, getNotesFromDigest, calculateInversions } from '../utils/pitchClass'
+import { playVoicing, preloadSynthesizer } from '../utils/audioSynthesis'
 import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
 import axios from 'axios'
@@ -21,6 +22,7 @@ export function VoicingsByPcid() {
   const [filteredData, setFilteredData] = useState<VoicingData[]>([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
+  const [playingDigest, setPlayingDigest] = useState<string | null>(null)
   const [filters, setFilters] = useState({
     minFrequencyShare: '',
     maxFrequencyShare: '',
@@ -34,6 +36,11 @@ export function VoicingsByPcid() {
   const itemsPerPage = 15
   const pcidNumber = pcid ? parseInt(pcid) : 0
   const pitches = getPresentPitches(pcidNumber)
+
+  // Preload audio synthesizer to avoid clipping on first play
+  useEffect(() => {
+    preloadSynthesizer()
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -135,6 +142,22 @@ export function VoicingsByPcid() {
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }))
+  }
+
+  const handlePlayVoicing = async (digest: string) => {
+    if (playingDigest === digest) return // Already playing this voicing
+    
+    try {
+      setPlayingDigest(digest)
+      const parseDigest = getNotesFromDigest(digest)
+      // Convert notes to MIDI (add 48 to shift to a reasonable octave range)
+      const midiNotes = parseDigest.notes.map(note => note + 48)
+      await playVoicing(midiNotes, 2.0)
+    } catch (error) {
+      console.error('Error playing voicing:', error)
+    } finally {
+      setTimeout(() => setPlayingDigest(null), 2000)
+    }
   }
 
   if (loading) {
@@ -306,6 +329,7 @@ export function VoicingsByPcid() {
                       <th>Notes</th>
                       <th>Frequency %</th>
                       <th>Duration %</th>
+                      <th>Play</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -343,6 +367,19 @@ export function VoicingsByPcid() {
                           </td>
                           <td>{frequencyPercent}%</td>
                           <td>{durationPercent}%</td>
+                          <td className="play-cell">
+                            <button
+                              className="mini-play-button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handlePlayVoicing(item.digest)
+                              }}
+                              disabled={playingDigest === item.digest}
+                              title="Play this voicing"
+                            >
+                              {playingDigest === item.digest ? '♪' : '▶'}
+                            </button>
+                          </td>
                         </tr>
                       )
                     })}

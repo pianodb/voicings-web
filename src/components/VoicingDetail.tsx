@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { getNotesFromDigest, type NoteInfo } from '../utils/pitchClass'
+import { playVoicing, playArpeggio, preloadSynthesizer } from '../utils/audioSynthesis'
 import { VoicingNotation } from './VoicingNotation'
 import { Header } from './Header'
 import { getApiUrl } from '../config/api'
@@ -21,6 +22,12 @@ export function VoicingDetail() {
   const [allVoicings, setAllVoicings] = useState<VoicingData[]>([])
   const [loading, setLoading] = useState(true)
   const [voicingAnalysis, setVoicingAnalysis] = useState<NoteInfo | null>(null)
+  const [isPlaying, setIsPlaying] = useState(false)
+
+  // Preload audio synthesizer to avoid clipping on first play
+  useEffect(() => {
+    preloadSynthesizer()
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,6 +73,40 @@ export function VoicingDetail() {
 
     fetchData()
   }, [pcid, digest])
+
+  // Handle chord synthesis
+  const handlePlayChord = async () => {
+    if (!voicingAnalysis || isPlaying) return
+    
+    try {
+      setIsPlaying(true)
+      // Convert notes to MIDI (add 48 to shift to a reasonable octave range)
+      const midiNotes = voicingAnalysis.notes.map(note => note + 48)
+      await playVoicing(midiNotes, 2.5)
+    } catch (error) {
+      console.error('Error playing chord:', error)
+    } finally {
+      setTimeout(() => setIsPlaying(false), 2500)
+    }
+  }
+
+  const handlePlayArpeggio = async () => {
+    if (!voicingAnalysis || isPlaying) return
+    
+    try {
+      setIsPlaying(true)
+      // Convert notes to MIDI (add 48 to shift to a reasonable octave range)
+      const midiNotes = voicingAnalysis.notes.map(note => note + 48)
+      // Calculate total duration: note delay * number of notes + last note duration
+      const totalDuration = (0.25 * midiNotes.length + 1.2) * 1000
+      
+      await playArpeggio(midiNotes, 0.25)
+      setTimeout(() => setIsPlaying(false), totalDuration)
+    } catch (error) {
+      console.error('Error playing arpeggio:', error)
+      setIsPlaying(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -167,6 +208,31 @@ export function VoicingDetail() {
                   <span className="label">Pitch Class Set</span>
                   <span className="value">{`{${pitchClassSet?.join(', ')}}`}</span>
                 </div>
+              </div>
+
+              <div className="audio-controls">
+                <h3>Audio Synthesis</h3>
+                <div className="audio-buttons">
+                  <button 
+                    onClick={handlePlayChord}
+                    disabled={isPlaying || !voicingAnalysis}
+                    className="play-button chord-button"
+                  >
+                    {isPlaying ? '♪ Playing...' : '▶ Play Chord'}
+                  </button>
+                  <button 
+                    onClick={handlePlayArpeggio}
+                    disabled={isPlaying || !voicingAnalysis}
+                    className="play-button arpeggio-button"
+                  >
+                    {isPlaying ? '♪ Playing...' : '🎵 Play Arpeggio'}
+                  </button>
+                </div>
+                {voicingAnalysis && (
+                  <div className="note-info">
+                    <strong>Notes:</strong> {voicingAnalysis.noteNames.join(' - ')}
+                  </div>
+                )}
               </div>
 
               <VoicingNotation 

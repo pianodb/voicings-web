@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { getNotesFromDigest, type NoteInfo } from '../utils/pitchClass'
-import { playVoicing, playArpeggio, preloadSynthesizer } from '../utils/audioSynthesis'
+import { playVoicing, playArpeggio } from '../utils/audioSynthesis'
 import { VoicingNotation } from './VoicingNotation'
 import { Header } from './Header'
 import { getApiUrl } from '../config/api'
@@ -22,11 +22,7 @@ export function VoicingDetail() {
   const [loading, setLoading] = useState(true)
   const [voicingAnalysis, setVoicingAnalysis] = useState<NoteInfo | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
-
-  // Preload audio synthesizer to avoid clipping on first play
-  useEffect(() => {
-    preloadSynthesizer()
-  }, [])
+  const [synthLoading, setSynthLoading] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,9 +70,10 @@ export function VoicingDetail() {
 
   // Handle chord synthesis
   const handlePlayChord = async () => {
-    if (!voicingAnalysis || isPlaying) return
+    if (!voicingAnalysis || isPlaying || synthLoading) return
     
     try {
+      setSynthLoading(true)
       setIsPlaying(true)
       // Convert notes to MIDI (add 48 to shift to a reasonable octave range)
       const midiNotes = voicingAnalysis.notes.map(note => note + 48)
@@ -84,14 +81,16 @@ export function VoicingDetail() {
     } catch (error) {
       console.error('Error playing chord:', error)
     } finally {
+      setSynthLoading(false)
       setTimeout(() => setIsPlaying(false), 2500)
     }
   }
 
   const handlePlayArpeggio = async () => {
-    if (!voicingAnalysis || isPlaying) return
+    if (!voicingAnalysis || isPlaying || synthLoading) return
     
     try {
+      setSynthLoading(true)
       setIsPlaying(true)
       // Convert notes to MIDI (add 48 to shift to a reasonable octave range)
       const midiNotes = voicingAnalysis.notes.map(note => note + 48)
@@ -99,9 +98,11 @@ export function VoicingDetail() {
       const totalDuration = (0.25 * midiNotes.length + 1.2) * 1000
       
       await playArpeggio(midiNotes, 0.25)
+      setSynthLoading(false)
       setTimeout(() => setIsPlaying(false), totalDuration)
     } catch (error) {
       console.error('Error playing arpeggio:', error)
+      setSynthLoading(false)
       setIsPlaying(false)
     }
   }
@@ -213,17 +214,17 @@ export function VoicingDetail() {
                 <div className="audio-buttons">
                   <button 
                     onClick={handlePlayChord}
-                    disabled={isPlaying || !voicingAnalysis}
+                    disabled={isPlaying || synthLoading || !voicingAnalysis}
                     className="play-button chord-button"
                   >
-                    {isPlaying ? '♪ Playing...' : '▶ Play Chord'}
+                    {synthLoading ? '⏳ Loading...' : isPlaying ? '♪ Playing...' : '▶ Play Chord'}
                   </button>
                   <button 
                     onClick={handlePlayArpeggio}
-                    disabled={isPlaying || !voicingAnalysis}
+                    disabled={isPlaying || synthLoading || !voicingAnalysis}
                     className="play-button arpeggio-button"
                   >
-                    {isPlaying ? '♪ Playing...' : '🎵 Play Arpeggio'}
+                    {synthLoading ? '⏳ Loading...' : isPlaying ? '♪ Playing...' : '🎵 Play Arpeggio'}
                   </button>
                 </div>
                 {voicingAnalysis && (

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getPresentPitches, getNotesFromDigest, calculateInversions } from '../utils/pitchClass'
-import { playVoicing, preloadSynthesizer } from '../utils/audioSynthesis'
+import { playVoicing } from '../utils/audioSynthesis'
 import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
 import axios from 'axios'
@@ -22,6 +22,7 @@ export function VoicingsByPcid() {
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [playingDigest, setPlayingDigest] = useState<string | null>(null)
+  const [synthLoading, setSynthLoading] = useState(false)
   const [filters, setFilters] = useState({
     minFrequencyShare: '',
     maxFrequencyShare: '',
@@ -35,11 +36,6 @@ export function VoicingsByPcid() {
   const itemsPerPage = 15
   const pcidNumber = pcid ? parseInt(pcid) : 0
   const pitches = getPresentPitches(pcidNumber)
-
-  // Preload audio synthesizer to avoid clipping on first play
-  useEffect(() => {
-    preloadSynthesizer()
-  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,9 +140,10 @@ export function VoicingsByPcid() {
   }
 
   const handlePlayVoicing = async (digest: string) => {
-    if (playingDigest === digest) return // Already playing this voicing
+    if (playingDigest === digest || synthLoading) return // Already playing this voicing or loading
     
     try {
+      setSynthLoading(true)
       setPlayingDigest(digest)
       const parseDigest = getNotesFromDigest(digest)
       // Convert notes to MIDI (add 48 to shift to a reasonable octave range)
@@ -155,6 +152,7 @@ export function VoicingsByPcid() {
     } catch (error) {
       console.error('Error playing voicing:', error)
     } finally {
+      setSynthLoading(false)
       setTimeout(() => setPlayingDigest(null), 2000)
     }
   }
@@ -373,10 +371,11 @@ export function VoicingsByPcid() {
                                 e.stopPropagation()
                                 handlePlayVoicing(item.digest)
                               }}
-                              disabled={playingDigest === item.digest}
+                              disabled={playingDigest === item.digest || synthLoading}
                               title="Play this voicing"
                             >
-                              {playingDigest === item.digest ? '♪' : '▶'}
+                              {synthLoading && playingDigest === item.digest ? '⏳' : 
+                               playingDigest === item.digest ? '♪' : '▶'}
                             </button>
                           </td>
                         </tr>

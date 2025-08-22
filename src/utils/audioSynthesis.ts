@@ -61,9 +61,10 @@ export class ChordSynthesizer {
   private masterGain: GainNode | null = null
   private currentOscillators: OscillatorNode[] = []
   private initializationPromise: Promise<void> | null = null
+  private isInitialized: boolean = false
 
   constructor() {
-    this.initializationPromise = this.initializeAudioContext()
+    // Don't initialize immediately - wait for user gesture
   }
 
   private async initializeAudioContext(): Promise<void> {
@@ -81,6 +82,8 @@ export class ChordSynthesizer {
       
       // Small delay to ensure everything is properly initialized
       await new Promise(resolve => setTimeout(resolve, 50))
+      
+      this.isInitialized = true
     } catch (error) {
       console.error('Web Audio API is not supported in this browser:', error)
       throw error
@@ -91,27 +94,36 @@ export class ChordSynthesizer {
    * Ensure the synthesizer is fully initialized before use
    */
   private async ensureInitialized(): Promise<void> {
+    // If already initialized, we're good to go
+    if (this.isInitialized && this.audioContext && this.masterGain) {
+      // Double-check audio context state
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume()
+        await new Promise(resolve => setTimeout(resolve, 50))
+      }
+      return
+    }
+
+    // If initialization is already in progress, wait for it
     if (this.initializationPromise) {
       await this.initializationPromise
+      return
     }
+
+    // Start initialization
+    this.initializationPromise = this.initializeAudioContext()
+    await this.initializationPromise
     
     if (!this.audioContext || !this.masterGain) {
       throw new Error('Audio context failed to initialize')
     }
-    
-    // Double-check audio context state
-    if (this.audioContext.state === 'suspended') {
-      await this.audioContext.resume()
-      // Give it a moment to actually resume
-      await new Promise(resolve => setTimeout(resolve, 100))
-    }
   }
 
   /**
-   * Public method to initialize the synthesizer (for preloading)
+   * Public method to check if synthesizer is ready (for UI feedback)
    */
-  async initialize(): Promise<void> {
-    await this.ensureInitialized()
+  isReady(): boolean {
+    return this.isInitialized && this.audioContext !== null && this.masterGain !== null
   }
 
   /**
@@ -256,16 +268,13 @@ export function getSynthesizer(): ChordSynthesizer {
 }
 
 /**
- * Preload and initialize the synthesizer to avoid clipping on first play
+ * Check if the synthesizer is ready to play audio
  */
-export async function preloadSynthesizer(): Promise<void> {
-  const synthesizer = getSynthesizer()
-  try {
-    // This will trigger the initialization and wait for it to complete
-    await synthesizer.initialize()
-  } catch (error) {
-    console.warn('Failed to preload synthesizer:', error)
+export function isSynthesizerReady(): boolean {
+  if (!globalSynthesizer) {
+    return false
   }
+  return globalSynthesizer.isReady()
 }
 
 /**

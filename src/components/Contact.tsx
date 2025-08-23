@@ -20,14 +20,14 @@ export function Contact() {
           </div>
 
           <div className="contact-methods">
-            {/* <div className="contact-card">
+            <div className="contact-card">
               <h4>📧 Email</h4>
               <p>For general inquiries, technical support, or collaboration opportunities:</p>
-              <a href="mailto:info@pianodb.com" className="contact-link">info@pianodb.com</a>
-            </div> */}
+              <a href="mailto:contact@pianodb.org" className="contact-link">contact@pianodb.org</a>
+            </div>
 
             <div className="contact-card">
-              <h4>📧 Discord</h4>
+              <h4>🎮 Discord</h4>
               <p>For general inquiries, technical support, or collaboration opportunities:</p>
               <a href="https://discord.gg/9BvE4khkqY" className="contact-link">Join our Discord server</a>
             </div>
@@ -52,7 +52,7 @@ export function Contact() {
             <div className="faq-item">
               <h4>How can I download the raw data?</h4>
               <p>
-                We recommend downloading the entire dataset through
+                We recommend accessing everything through
                 huggingface:
                 &nbsp;<a href="https://huggingface.co/datasets/conjuncts/voicings-rel" target="_blank" rel="noopener noreferrer">conjuncts/voicings-rel</a> 
                 &nbsp;and <a href="https://huggingface.co/datasets/conjuncts/voicings" target="_blank" rel="noopener noreferrer">conjuncts/voicings</a>.
@@ -69,22 +69,11 @@ export function Contact() {
             <div className="faq-item">
               <h4>Is there an API available?</h4>
               <p>
-                No. However, all the data on the website is accessible through huggingface.
+                No. However, everything is openly accessible through huggingface or github.
               </p>
             </div>
           </div>
 
-          <div className="contact-section">
-            <h3>Acknowledgments</h3>
-            <p>
-              We thank the following people for their hard work:
-            </p>
-            <ul>
-              <li>Louis Bradshaw, Simon Colton for Aria-MIDI, without which this project would not be possible</li>
-              <li>0xfe for <a href="https://github.com/0xfe/vexflow">vexflow</a>, the javascript music engraving library</li>
-              <li>All musicians who have shared their recordings for analysis!</li>
-            </ul>
-          </div>
         </main>
       </div>
       <Footer />

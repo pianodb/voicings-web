@@ -24,6 +24,7 @@ export function VoicingDetail() {
   const [voicingAnalysis, setVoicingAnalysis] = useState<NoteInfo | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [synthLoading, setSynthLoading] = useState(false)
+  const [activePanel, setActivePanel] = useState('overview')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -165,85 +166,108 @@ export function VoicingDetail() {
 
           <div className="detail-sidebar">
             <nav className="detail-nav">
-              <div className="nav-item active">Overview</div>
+              <div 
+                className={`nav-item ${activePanel === 'overview' ? 'active' : ''}`}
+                onClick={() => setActivePanel('overview')}
+              >
+                Overview
+              </div>
+              <div 
+                className={`nav-item ${activePanel === 'audio' ? 'active' : ''}`}
+                onClick={() => setActivePanel('audio')}
+              >
+                Audio Synthesis
+              </div>
               <div className="nav-item disabled">Note Analysis</div>
             </nav>
           </div>
 
           <div className="detail-content">
-            <h2>Overview</h2>
+            {activePanel === 'overview' && (
+              <>
+                <h2>Overview</h2>
 
+                <div className="overview-grid">
+                  <div className="overview-section">
+                    <div className="overview-row">
+                      <span className="label">Digest</span>
+                      <span className="value digest-value">{voicing.digest}</span>
+                      <span className="label">PCID</span>
+                      <span className="value">{pcid}</span>
+                    </div>
 
-            <div className="overview-grid">
-              <div className="overview-section">
-                <div className='overview-row'>
-                  <span className="label">Notes</span>
-                  <span className="value">
+                    <div className="overview-row">
+                      <span className="label">Frequency</span>
+                      <span className="value">{voicing.frequency.toLocaleString()}</span>
+                      <span className="label">Duration</span>
+                      <span className="value">{voicing.duration.toLocaleString()}</span>
+                    </div>
+
+                    <div className="overview-row">
+                      <span className="label">Frequency Share</span>
+                      <span className="value">{frequencyPercent}%</span>
+                      <span className="label">Duration Share</span>
+                      <span className="value">{durationPercent}%</span>
+                    </div>
+
+                    <div className="overview-row">
+                      <span className="label">Frequency Rank</span>
+                      <span className="value">#{frequencyRank}</span>
+                      <span className="label">Duration Rank</span>
+                      <span className="value">#{durationRank}</span>
+                    </div>
+
+                    <div className="overview-row">
+                      <span className="label">Pitch Class Set</span>
+                      <span className="value">{`{${pitchClassSet?.join(', ')}}`}</span>
+                    </div>
+
+                    <div className='overview-row'>
+                      <span className="label">Notes</span>
+                      <span className="value">
+                        <VoicingNotation 
+                          notes={voicingAnalysis?.notes.map(n => n + 48)} 
+                        />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {activePanel === 'audio' && (
+              <>
+                <h2>Audio Synthesis</h2>
+                <div className="audio-content">
+                  <div className="audio-controls">
+                    <div className="audio-buttons">
+                      <button 
+                        onClick={handlePlayChord}
+                        disabled={isPlaying || synthLoading || !voicingAnalysis}
+                        className="play-button chord-button"
+                      >
+                        {synthLoading ? '⏳ Loading...' : isPlaying ? '♪ Playing...' : '▶ Play Chord'}
+                      </button>
+                      <button 
+                        onClick={handlePlayArpeggio}
+                        disabled={isPlaying || synthLoading || !voicingAnalysis}
+                        className="play-button arpeggio-button"
+                      >
+                        {synthLoading ? '⏳ Loading...' : isPlaying ? '♪ Playing...' : '🎵 Play Arpeggio'}
+                      </button>
+                    </div>
+                    {voicingAnalysis && (
+                      <div className="note-info">
+                        <strong>Notes:</strong> {voicingAnalysis.noteNames.join(' - ')}
+                      </div>
+                    )}
                     <VoicingNotation 
                       notes={voicingAnalysis?.notes.map(n => n + 48)} 
                     />
-                  </span>
-                </div>
-                <div className="overview-row">
-                  <span className="label">Digest</span>
-                  <span className="value digest-value">{voicing.digest}</span>
-                  <span className="label">PCID</span>
-                  <span className="value">{pcid}</span>
-                </div>
-
-                <div className="overview-row">
-                  <span className="label">Frequency</span>
-                  <span className="value">{voicing.frequency.toLocaleString()}</span>
-                  <span className="label">Duration</span>
-                  <span className="value">{voicing.duration.toLocaleString()}</span>
-                </div>
-
-                <div className="overview-row">
-                  <span className="label">Frequency Share</span>
-                  <span className="value">{frequencyPercent}%</span>
-                  <span className="label">Duration Share</span>
-                  <span className="value">{durationPercent}%</span>
-                </div>
-
-
-                <div className="overview-row">
-                  <span className="label">Frequency Rank</span>
-                  <span className="value">#{frequencyRank}</span>
-                  <span className="label">Duration Rank</span>
-                  <span className="value">#{durationRank}</span>
-                </div>
-
-                <div className="overview-row">
-                  <span className="label">Pitch Class Set</span>
-                  <span className="value">{`{${pitchClassSet?.join(', ')}}`}</span>
-                </div>
-              </div>
-
-              <div className="audio-controls">
-                <h3>Audio Synthesis</h3>
-                <div className="audio-buttons">
-                  <button 
-                    onClick={handlePlayChord}
-                    disabled={isPlaying || synthLoading || !voicingAnalysis}
-                    className="play-button chord-button"
-                  >
-                    {synthLoading ? '⏳ Loading...' : isPlaying ? '♪ Playing...' : '▶ Play Chord'}
-                  </button>
-                  <button 
-                    onClick={handlePlayArpeggio}
-                    disabled={isPlaying || synthLoading || !voicingAnalysis}
-                    className="play-button arpeggio-button"
-                  >
-                    {synthLoading ? '⏳ Loading...' : isPlaying ? '♪ Playing...' : '🎵 Play Arpeggio'}
-                  </button>
-                </div>
-                {voicingAnalysis && (
-                  <div className="note-info">
-                    <strong>Notes:</strong> {voicingAnalysis.noteNames.join(' - ')}
                   </div>
-                )}
-              </div>
-            </div>
+                </div>
+              </>
+            )}
           </div>
 
         </div>

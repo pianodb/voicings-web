@@ -220,3 +220,27 @@ export function calculateInversions(pcid: number): Array<{pcid: number, inversio
   return inversions
 }
 
+/**
+ * Calculate the interval vector for a given PCID
+ * @param pcid 
+ * @returns 
+ */
+export function calculateIntervalVector(pcid: number): number[] {
+  const pitchClasses = unpackPitchClass(pcid)
+  const intervals = new Array(6).fill(0) // Interval vector has 6 entries
+  
+  // Calculate all pairwise intervals
+  for (let i = 0; i < pitchClasses.length; i++) {
+    for (let j = i + 1; j < pitchClasses.length; j++) {
+      let interval = Math.abs(pitchClasses[j] - pitchClasses[i])
+      if (interval > 6) {
+        interval = 12 - interval // Use the smaller interval within the octave
+      }
+      if (interval > 0 && interval <= 6) {
+        intervals[interval - 1] += 1
+      }
+    }
+  }
+  
+  return intervals
+}

@@ -8,3 +8,6 @@ TODO:
 - [ ] Setup email (contact@pianodb.org)
 - [x] Allow "contains pitch" to accept multiple pitches
 - [ ] Write README
+
+- https://www.reddit.com/r/musictheory/comments/1hi1mdr/music_theory_group_theory/
+pitch-class set theory

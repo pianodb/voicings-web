@@ -108,9 +108,9 @@ export function Search() {
     setSearchResults([])
   }
 
-  const handlePcidClick = (pcid: number) => {
+  const handlePcidClick = (pcid: number, frequencyRank: number) => {
     // navigate(`/voicings/${pcid}`)
-    window.open(`/voicings/${pcid}`, '_blank')
+    window.open(`/voicings/${pcid}?rank=${frequencyRank}`, '_blank')
   }
 
   const userPcid = calculatePcidFromMidiNotes(selectedNotes)
@@ -293,7 +293,7 @@ export function Search() {
                           </td>
                           <td 
                             className="pcid-link" 
-                            onClick={() => handlePcidClick(item.pcid)}
+                            onClick={() => handlePcidClick(item.pcid, item.rank)}
                           >
                             {item.pcid}
                           </td>

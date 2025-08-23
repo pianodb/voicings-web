@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { getPresentPitches, getNotesFromDigest, calculateInversions } from '../utils/pitchClass'
+import { getForteNumber, getPrimeForm, getIntervalVector, getPossibleSpacings } from '../utils/pcidThesaurus'
 import { playVoicing } from '../utils/audioSynthesis'
 import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
@@ -232,6 +233,10 @@ export function VoicingsByPcid() {
               <p><strong>Pitches:</strong> {pitches.join(' ')}</p>
               <p><strong>Binary:</strong> {pcidNumber.toString(2).padStart(12, '0')}</p>
               {rank && <p><strong>Popularity Rank:</strong> #{rank}</p>}
+              {getForteNumber(pcidNumber) && <p><strong>Forte Number:</strong> {getForteNumber(pcidNumber)}</p>}
+              {getPrimeForm(pcidNumber) && <p><strong>Prime Form:</strong> {getPrimeForm(pcidNumber)}</p>}
+              {getIntervalVector(pcidNumber) && <p><strong>Interval Vector:</strong> {getIntervalVector(pcidNumber)}</p>}
+              {getPossibleSpacings(pcidNumber) && <p><strong>Description:</strong> {getPossibleSpacings(pcidNumber)}</p>}
             </div>
             <MusicNotation pcid={pcidNumber}/>
             

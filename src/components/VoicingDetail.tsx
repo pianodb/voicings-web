@@ -7,6 +7,14 @@ import { VoicingNotation } from './VoicingNotation'
 import { Header } from './Header'
 import { Footer } from './Footer'
 import { getApiUrl } from '../config/api'
+import { 
+  getForteNumber, 
+  getPrimeForm, 
+  getIntervalVector, 
+  getCarterNumber, 
+  getPossibleSpacings,
+  getPcidThesaurusEntry
+} from '../utils/pcidThesaurus'
 
 interface VoicingData {
   frequency: number
@@ -25,6 +33,14 @@ export function VoicingDetail() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [synthLoading, setSynthLoading] = useState(false)
   const [activePanel, setActivePanel] = useState('overview')
+  const [thesaurusData, setThesaurusData] = useState<{
+    forteNumber: string | null
+    primeForm: string | null
+    intervalVector: string | null
+    carterNumber: number | null
+    possibleSpacings: string | null
+    complement: string | null
+  } | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,6 +72,20 @@ export function VoicingDetail() {
           try {
             const noteInfo = getNotesFromDigest(decodedDigest)
             setVoicingAnalysis({ ...noteInfo })
+
+            // Load thesaurus data for this PCID
+            const pcidNum = parseInt(pcid)
+            if (!isNaN(pcidNum)) {
+              const entry = getPcidThesaurusEntry(pcidNum)
+              setThesaurusData({
+                forteNumber: getForteNumber(pcidNum),
+                primeForm: getPrimeForm(pcidNum),
+                intervalVector: getIntervalVector(pcidNum),
+                carterNumber: getCarterNumber(pcidNum),
+                possibleSpacings: getPossibleSpacings(pcidNum),
+                complement: entry?.complement || null
+              })
+            }
           } catch (error) {
             console.error('Error analyzing voicing:', error)
           }
@@ -190,11 +220,53 @@ export function VoicingDetail() {
                 <div className="overview-grid">
                   <div className="overview-section">
                     <div className="overview-row">
-                      <span className="label">Digest</span>
+                      <span className="label">Voicing digest</span>
                       <span className="value digest-value">{voicing.digest}</span>
                       <span className="label">PCID</span>
                       <span className="value">{pcid}</span>
                     </div>
+
+                    {thesaurusData && (
+                      <>
+                        <div className="overview-row">
+                          <span className="label">Forte Number</span>
+                          <span className="value">{thesaurusData.forteNumber || 'N/A'}</span>
+                          <span className="label">Carter Number</span>
+                          <span className="value">{thesaurusData.carterNumber !== null ? thesaurusData.carterNumber : 'N/A'}</span>
+                        </div>
+
+                        <div className="overview-row">
+                          <span className="label">Prime Form</span>
+                          <span className="value">{thesaurusData.primeForm || 'N/A'}</span>
+                          <span className="label">Interval Vector</span>
+                          <span className="value">{thesaurusData.intervalVector || 'N/A'}</span>
+                        </div>
+
+                        <div className="overview-row">
+                          <span className="label">Complement</span>
+                          <span className="value">{thesaurusData.complement || 'N/A'}</span>
+                          
+                          {thesaurusData.possibleSpacings && (
+                            <>
+                              <span className="label">Description</span>
+                              <span className="value spacing-value">{thesaurusData.possibleSpacings}</span>
+                            </>
+                          )}
+                        </div>
+                      </>
+                    )}
+
+
+                    <div className='overview-row'>
+                      <span className="label">Notes</span>
+                      <span className="value">
+                        <VoicingNotation 
+                          notes={voicingAnalysis?.notes.map(n => n + 48)} 
+                        />
+                      </span>
+                    </div>
+
+                    <h3>Stats within PCID {pcid}</h3>
 
                     <div className="overview-row">
                       <span className="label">Frequency</span>
@@ -222,14 +294,9 @@ export function VoicingDetail() {
                       <span className="value">{`{${pitchClassSet?.join(', ')}}`}</span>
                     </div>
 
-                    <div className='overview-row'>
-                      <span className="label">Notes</span>
-                      <span className="value">
-                        <VoicingNotation 
-                          notes={voicingAnalysis?.notes.map(n => n + 48)} 
-                        />
-                      </span>
-                    </div>
+                    
+
+                    
                   </div>
                 </div>
               </>

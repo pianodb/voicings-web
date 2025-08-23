@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { getPresentPitches, getNotesFromDigest, calculateInversions } from '../utils/pitchClass'
 import { playVoicing } from '../utils/audioSynthesis'
 import { MusicNotation } from './MusicNotation'
@@ -18,6 +18,7 @@ interface VoicingData {
 export function VoicingsByPcid() {
   const { pcid } = useParams<{ pcid: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
   const [voicingData, setVoicingData] = useState<VoicingData[]>([])
   const [filteredData, setFilteredData] = useState<VoicingData[]>([])
   const [loading, setLoading] = useState(true)
@@ -26,6 +27,7 @@ export function VoicingsByPcid() {
   const [editPageValue, setEditPageValue] = useState('')
   const [playingDigest, setPlayingDigest] = useState<string | null>(null)
   const [synthLoading, setSynthLoading] = useState(false)
+  const [rank, setRank] = useState<number | null>(null)
   const [filters, setFilters] = useState({
     minFrequencyShare: '',
     maxFrequencyShare: '',
@@ -39,6 +41,18 @@ export function VoicingsByPcid() {
   const itemsPerPage = 15
   const pcidNumber = pcid ? parseInt(pcid) : 0
   const pitches = getPresentPitches(pcidNumber)
+
+  // Extract rank from query string and clean up URL
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search)
+    const rankParam = searchParams.get('rank')
+    
+    if (rankParam) {
+      setRank(parseInt(rankParam))
+      // Clean up the URL by removing query string
+      navigate(`/voicings/${pcid}`, { replace: true })
+    }
+  }, [location.search, pcid, navigate])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -202,6 +216,7 @@ export function VoicingsByPcid() {
             <div className="pitch-info">
               <p><strong>Pitches:</strong> {pitches.join(' ')}</p>
               <p><strong>Binary:</strong> {pcidNumber.toString(2).padStart(12, '0')}</p>
+              {rank && <p><strong>Popularity Rank:</strong> #{rank}</p>}
             </div>
             <MusicNotation pcid={pcidNumber}/>
             
@@ -324,7 +339,9 @@ export function VoicingsByPcid() {
         </aside>
 
         <main className="content">
-          <button onClick={() => navigate('/chords')} className="back-link">
+          <button onClick={() => {
+            navigate(`/chords?pcid=${pcid}`)
+          }} className="back-link">
             ← Back to Chords
           </button>
           <h2>Voicings for PCID {pcid}</h2>

@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { getPresentPitches } from '../utils/pitchClass'
 import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
 import { Footer } from './Footer'
 import csvData from '../assets/most_popular_cls_packed.csv?raw'
+import type { PitchClassData } from '../utils/types'
+import { loadPitchClassCsv } from '../utils/loadCsv'
 
-interface PitchClassData {
-  frequency: number
-  duration: number
-  pcid: number
-}
 
 export function PitchClassDatabase() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [pitchClassData, setPitchClassData] = useState<PitchClassData[]>([])
   const [filteredData, setFilteredData] = useState<PitchClassData[]>([])
   const [loading, setLoading] = useState(true)
@@ -37,17 +35,7 @@ export function PitchClassDatabase() {
     const loadData = () => {
       setLoading(true)
       try {
-        const lines = csvData.split('\n')
-        const data: PitchClassData[] = lines.slice(1)
-          .filter((line: string) => line.trim())
-          .map((line: string) => {
-            const values = line.split(',')
-            return {
-              frequency: parseInt(values[0]),
-              duration: parseFloat(values[1]),
-              pcid: parseInt(values[2])
-            }
-          })
+        const data = loadPitchClassCsv(csvData)
         
         setPitchClassData(data)
         setFilteredData(data)
@@ -121,8 +109,26 @@ export function PitchClassDatabase() {
     }
 
     setFilteredData(filtered)
-    setCurrentPage(1)
-  }, [filters, pitchClassData])
+
+    // Once csv data is available, calculate correct page
+    const searchParams = new URLSearchParams(location.search)
+    const pcidParam = searchParams.get('pcid')
+    
+    if (filtered.length > 0 && pcidParam) {
+      const pcidFrom = parseInt(pcidParam)
+      // Find the index of the pcid in the filtered data
+      const index = filtered.findIndex(item => item.pcid === pcidFrom)
+      const pageNumber = index !== -1 ? Math.floor(index / itemsPerPage) + 1 : 1
+      if (pageNumber >= 1) {
+        setCurrentPage(pageNumber)
+      }
+      // Clean up the URL by removing query string
+      // navigate('/chords', { replace: true })
+    } else {
+      setCurrentPage(1)
+    }
+  }, [filters, pitchClassData, location.search, navigate])
+
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -132,8 +138,8 @@ export function PitchClassDatabase() {
     setFilters(prev => ({ ...prev, [key]: value }))
   }
 
-  const handlePcidClick = (pcid: number) => {
-    navigate(`/voicings/${pcid}`)
+  const handlePcidClick = (pcid: number, rank?: number) => {
+    navigate(`/voicings/${pcid}${rank ? `?rank=${rank}` : ''}`)
   }
 
   const handlePageClick = () => {
@@ -303,7 +309,7 @@ export function PitchClassDatabase() {
                         >
                           <td 
                             className="pcid-link" 
-                            onClick={() => handlePcidClick(item.pcid)}
+                            onClick={() => handlePcidClick(item.pcid, item.rank)}
                           >
                             {item.pcid}
                           </td>

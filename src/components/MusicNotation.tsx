@@ -20,6 +20,7 @@ export function MusicNotation({ pcid, showTitle }: MusicNotationProps) {
         const { Renderer, Stave, StaveNote, Voice, Formatter, Accidental } = await import('vexflow')
         
         // Clear previous content
+        if (!svgRef.current) return
         svgRef.current.innerHTML = ''
 
         const pitchNumbers = unpackPitchClass(pcid)

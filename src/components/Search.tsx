@@ -6,13 +6,10 @@ import { Header } from './Header'
 import { Footer } from './Footer'
 import csvData from '../assets/most_popular_cls_packed.csv?raw'
 import { VoicingNotation } from './VoicingNotation'
+import type { PitchClassData } from '../utils/types'
+import { loadPitchClassCsv } from '../utils/loadCsv'
 
-interface PitchClassData {
-  frequency: number
-  duration: number
-  pcid: number
-  frequencyRank: number
-}
+
 
 export function Search() {
   const [pitchClassData, setPitchClassData] = useState<PitchClassData[]>([])
@@ -24,19 +21,8 @@ export function Search() {
     const loadData = () => {
       setLoading(true)
       try {
-        const lines = csvData.split('\n')
-        const data: PitchClassData[] = lines.slice(1)
-          .filter((line: string) => line.trim())
-          .map((line: string, index: number) => {
-            const values = line.split(',')
-            return {
-              frequency: parseInt(values[0]),
-              duration: parseFloat(values[1]),
-              pcid: parseInt(values[2]),
-              frequencyRank: index + 1  // First entry is rank 1
-            }
-          })
-        
+        const data = loadPitchClassCsv(csvData)
+
         setPitchClassData(data)
       } catch (error) {
         console.error('Error loading pitch class data:', error)
@@ -319,7 +305,7 @@ export function Search() {
                             />
                           </td>
                           <td>{item.frequency.toLocaleString()}</td>
-                          <td>#{item.frequencyRank}</td>
+                          <td>#{item.rank}</td>
                         </tr>
                       )
                     })}

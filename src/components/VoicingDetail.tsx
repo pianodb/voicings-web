@@ -8,11 +8,8 @@ import { Header } from './Header'
 import { Footer } from './Footer'
 import { getApiUrl } from '../config/api'
 import { 
-  getForteNumber, 
   getPrimeForm, 
   getIntervalVector, 
-  getCarterNumber, 
-  getPossibleSpacings,
   getPcidThesaurusEntry
 } from '../utils/pcidThesaurus'
 
@@ -78,11 +75,11 @@ export function VoicingDetail() {
             if (!isNaN(pcidNum)) {
               const entry = getPcidThesaurusEntry(pcidNum)
               setThesaurusData({
-                forteNumber: getForteNumber(pcidNum),
+                forteNumber: entry?.forteNumber || null,
                 primeForm: getPrimeForm(pcidNum),
                 intervalVector: getIntervalVector(pcidNum),
-                carterNumber: getCarterNumber(pcidNum),
-                possibleSpacings: getPossibleSpacings(pcidNum),
+                carterNumber: entry?.carterNumber || null,
+                possibleSpacings: entry?.possibleSpacings || null,
                 complement: entry?.complement || null
               })
             }

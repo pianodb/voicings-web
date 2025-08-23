@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { getPresentPitches } from '../utils/pitchClass'
+import { getPcidThesaurusEntry } from '../utils/pcidThesaurus'
 import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
 import { Footer } from './Footer'
@@ -28,7 +29,8 @@ export function PitchClassDatabase() {
     pitchFilter: '',
     minPitches: '',
     maxPitches: '',
-    nameFilter: '' // Will be used for PCID filter
+    nameFilter: '',
+    rootInversionsOnly: false
   })
 
   const itemsPerPage = 10
@@ -117,6 +119,34 @@ export function PitchClassDatabase() {
         )
       }
     }
+    if (filters.rootInversionsOnly) {
+      // Group by root PCID and aggregate frequency/duration
+      const rootGroups = new Map<number, PitchClassData>()
+      
+      filtered.forEach(item => {
+        const thesaurusEntry = getPcidThesaurusEntry(item.pcid)
+        const rootPcid = thesaurusEntry?.rootPcid || item.pcid
+        
+        if (rootGroups.has(rootPcid)) {
+          // Add to existing root group
+          const existing = rootGroups.get(rootPcid)!
+          existing.frequency += item.frequency
+          existing.duration += item.duration
+        } else {
+          // Create new root group - use the root PCID entry if available, otherwise current item
+          const rootItem = filtered.find(f => f.pcid === rootPcid) || item
+          rootGroups.set(rootPcid, {
+            pcid: rootPcid,
+            frequency: item.frequency,
+            duration: item.duration,
+            rank: rootItem.rank // Use the original rank of the root position
+          })
+        }
+      })
+      
+      filtered = Array.from(rootGroups.values())
+        .sort((a, b) => b.frequency - a.frequency) // Sort by aggregated frequency descending
+    }
 
     setFilteredData(filtered)
 
@@ -144,7 +174,7 @@ export function PitchClassDatabase() {
   const startIndex = (currentPage - 1) * itemsPerPage
   const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage)
 
-  const handleFilterChange = (key: keyof FilterState, value: string) => {
+  const handleFilterChange = (key: keyof FilterState, value: string | boolean) => {
     setFilters(prev => ({ ...prev, [key]: value }))
   }
 
@@ -157,7 +187,8 @@ export function PitchClassDatabase() {
       pitchFilter: '',
       minPitches: '',
       maxPitches: '',
-      nameFilter: ''
+      nameFilter: '',
+      rootInversionsOnly: false
     })
   }
 
@@ -200,6 +231,7 @@ export function PitchClassDatabase() {
             onClearFilters={handleClearFilters}
             nameFilterLabel="PCID Filter"
             nameFilterPlaceholder="e.g., 144"
+            filterByInversion={true}
           />
         </aside>
 

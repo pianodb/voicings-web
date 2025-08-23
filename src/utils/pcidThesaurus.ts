@@ -89,11 +89,6 @@ export function getPcidThesaurusEntry(pcid: number): PcidThesaurusEntry | null {
   return data.pcidToEntry.get(pcid) || null
 }
 
-export function getForteNumber(pcid: number): string | null {
-  const entry = getPcidThesaurusEntry(pcid)
-  return entry?.forteNumber || null
-}
-
 export function getPrimeForm(pcid: number): string | null {
   const entry = getPcidThesaurusEntry(pcid)
   const notes = unpackPitchClass(entry?.primePcid || 0)
@@ -107,14 +102,4 @@ export function getIntervalVector(pcid: number): string | null {
   // should 
   const intervals = calculateIntervalVector(pcid)
   return `<${intervals.join(',')}>`
-}
-
-export function getCarterNumber(pcid: number): number | null {
-  const entry = getPcidThesaurusEntry(pcid)
-  return entry?.carterNumber || null
-}
-
-export function getPossibleSpacings(pcid: number): string | null {
-  const entry = getPcidThesaurusEntry(pcid)
-  return entry?.possibleSpacings || null
 }

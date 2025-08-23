@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { getPresentPitches, getNotesFromDigest, calculateInversions } from '../utils/pitchClass'
-import { getForteNumber, getPrimeForm, getIntervalVector, getPossibleSpacings } from '../utils/pcidThesaurus'
+import { getPcidThesaurusEntry, getPrimeForm, getIntervalVector } from '../utils/pcidThesaurus'
 import { playVoicing } from '../utils/audioSynthesis'
 import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
@@ -38,12 +38,14 @@ export function VoicingsByPcid() {
     pitchFilter: '',
     minPitches: '',
     maxPitches: '',
-    nameFilter: '' // Will be used for digest filter
+    nameFilter: '',
+    rootInversionsOnly: false
   })
 
   const itemsPerPage = 15
   const pcidNumber = pcid ? parseInt(pcid) : 0
   const pitches = getPresentPitches(pcidNumber)
+  const thesaurusEntry = getPcidThesaurusEntry(pcidNumber)
 
   // Extract rank from query string and clean up URL
   useEffect(() => {
@@ -155,7 +157,7 @@ export function VoicingsByPcid() {
   const startIndex = (currentPage - 1) * itemsPerPage
   const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage)
 
-  const handleFilterChange = (key: keyof FilterState, value: string) => {
+  const handleFilterChange = (key: keyof FilterState, value: string | boolean) => {
     setFilters(prev => ({ ...prev, [key]: value }))
   }
 
@@ -168,7 +170,8 @@ export function VoicingsByPcid() {
       pitchFilter: '',
       minPitches: '',
       maxPitches: '',
-      nameFilter: ''
+      nameFilter: '',
+      rootInversionsOnly: false
     })
   }
 
@@ -233,10 +236,23 @@ export function VoicingsByPcid() {
               <p><strong>Pitches:</strong> {pitches.join(' ')}</p>
               <p><strong>Binary:</strong> {pcidNumber.toString(2).padStart(12, '0')}</p>
               {rank && <p><strong>Popularity Rank:</strong> #{rank}</p>}
-              {getForteNumber(pcidNumber) && <p><strong>Forte Number:</strong> {getForteNumber(pcidNumber)}</p>}
+              {thesaurusEntry?.forteNumber && <p><strong>Forte Number:</strong> {thesaurusEntry.forteNumber}</p>}
               {getPrimeForm(pcidNumber) && <p><strong>Prime Form:</strong> {getPrimeForm(pcidNumber)}</p>}
+              {thesaurusEntry?.primePcid && (
+                <p>
+                  <strong>Prime PCID:</strong>{' '}
+                  <span 
+                    className="pcid-link" 
+                    onClick={() => navigate(`/voicings/${thesaurusEntry.primePcid}`)}
+                    style={{ cursor: 'pointer', color: '#007acc', textDecoration: 'underline' }}
+                    title="Click to view prime form"
+                  >
+                    {thesaurusEntry.primePcid}
+                  </span>
+                </p>
+              )}
               {getIntervalVector(pcidNumber) && <p><strong>Interval Vector:</strong> {getIntervalVector(pcidNumber)}</p>}
-              {getPossibleSpacings(pcidNumber) && <p><strong>Description:</strong> {getPossibleSpacings(pcidNumber)}</p>}
+              {thesaurusEntry?.possibleSpacings && <p><strong>Description:</strong> {thesaurusEntry.possibleSpacings}</p>}
             </div>
             <MusicNotation pcid={pcidNumber}/>
             
@@ -248,9 +264,9 @@ export function VoicingsByPcid() {
                   <li
                     className={`inversion-link ${inversion.pcid === pcidNumber ? 'most-popular' : ''}`}
                     onClick={() => navigate(`/voicings/${inversion.pcid}`)}
-                    title={`${inversion.rootNote} inversion (PCID ${inversion.pcid})${inversion.pcid === pcidNumber ? ' - Current' : ''}`}
+                    title={`${inversion.rootNote} inversion (PCID ${inversion.pcid})${inversion.pcid === pcidNumber ? ' - Current' : ''}${inversion.pcid === thesaurusEntry?.rootPcid ? ' - Root position' : ''}`}
                   >
-                    {inversion.rootNote} ({inversion.pcid}){inversion.pcid === pcidNumber ? ' ★' : ''}
+                    {inversion.rootNote} ({inversion.pcid}){inversion.pcid === thesaurusEntry?.rootPcid ? ' ★' : ''}
                   </li>
                 ))}
               </ul>
@@ -263,6 +279,7 @@ export function VoicingsByPcid() {
             onClearFilters={handleClearFilters}
             nameFilterLabel="Digest Filter"
             nameFilterPlaceholder="Search digest..."
+            filterByInversion={false}
           />
         </aside>
 

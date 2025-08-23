@@ -7,14 +7,16 @@ export interface FilterState {
   minPitches: string
   maxPitches: string
   nameFilter: string // Generic name for PCID or digest filter
+  rootInversionsOnly: boolean
 }
 
 interface UnifiedFiltersProps {
   filters: FilterState
-  onFilterChange: (key: keyof FilterState, value: string) => void
+  onFilterChange: (key: keyof FilterState, value: string | boolean) => void
   onClearFilters: () => void
   nameFilterLabel: string // "PCID Filter" or "Digest Filter"
   nameFilterPlaceholder: string // "e.g., 144" or "Search digest..."
+  filterByInversion: boolean
 }
 
 export function BrowserFilter({
@@ -22,7 +24,8 @@ export function BrowserFilter({
   onFilterChange,
   onClearFilters,
   nameFilterLabel,
-  nameFilterPlaceholder
+  nameFilterPlaceholder,
+  filterByInversion=false,
 }: UnifiedFiltersProps) {
   return (
     <div className="filter-section">
@@ -125,6 +128,17 @@ export function BrowserFilter({
           className="filter-input"
         />
       </div>
+
+      {filterByInversion && <div className="filter-group">
+        <label>
+          <input 
+            type="checkbox" 
+            checked={filters.rootInversionsOnly}
+            onChange={(e) => onFilterChange('rootInversionsOnly', e.target.checked)}
+          />
+          <span style={{ marginLeft: '8px' }}>Root inversions only</span>
+        </label>
+      </div>}
 
       <button 
         className="apply-filters-btn"

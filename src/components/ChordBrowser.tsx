@@ -19,6 +19,8 @@ export function PitchClassDatabase() {
   const [loading, setLoading] = useState(true)
   const [_selectedPcid, setSelectedPcid] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
+  const [isEditingPage, setIsEditingPage] = useState(false)
+  const [editPageValue, setEditPageValue] = useState('')
   const [filters, setFilters] = useState({
     minFrequencyShare: '',
     maxFrequencyShare: '',
@@ -132,6 +134,29 @@ export function PitchClassDatabase() {
 
   const handlePcidClick = (pcid: number) => {
     navigate(`/voicings/${pcid}`)
+  }
+
+  const handlePageClick = () => {
+    setIsEditingPage(true)
+    setEditPageValue(currentPage.toString())
+  }
+
+  const handlePageSubmit = () => {
+    const pageNumber = parseInt(editPageValue)
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber)
+    }
+    setIsEditingPage(false)
+    setEditPageValue('')
+  }
+
+  const handlePageKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handlePageSubmit()
+    } else if (e.key === 'Escape') {
+      setIsEditingPage(false)
+      setEditPageValue('')
+    }
   }
 
   return (
@@ -310,7 +335,23 @@ export function PitchClassDatabase() {
                 </button>
                 
                 <span className="pagination-info">
-                  Page {currentPage} of {totalPages} ({filteredData.length} entries)
+                  Page {isEditingPage ? (
+                    <input
+                      type="number"
+                      value={editPageValue}
+                      onChange={(e) => setEditPageValue(e.target.value)}
+                      onKeyDown={handlePageKeyPress}
+                      onBlur={handlePageSubmit}
+                      autoFocus
+                      className="page-edit-input"
+                      min="1"
+                      max={totalPages}
+                    />
+                  ) : (
+                    <span className="page-number" onClick={handlePageClick}>
+                      {currentPage}
+                    </span>
+                  )} of {totalPages} ({filteredData.length} entries)
                 </span>
                 
                 <button 

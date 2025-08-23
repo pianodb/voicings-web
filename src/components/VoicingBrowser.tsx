@@ -22,6 +22,8 @@ export function VoicingsByPcid() {
   const [filteredData, setFilteredData] = useState<VoicingData[]>([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
+  const [isEditingPage, setIsEditingPage] = useState(false)
+  const [editPageValue, setEditPageValue] = useState('')
   const [playingDigest, setPlayingDigest] = useState<string | null>(null)
   const [synthLoading, setSynthLoading] = useState(false)
   const [filters, setFilters] = useState({
@@ -155,6 +157,29 @@ export function VoicingsByPcid() {
     } finally {
       setSynthLoading(false)
       setTimeout(() => setPlayingDigest(null), 2000)
+    }
+  }
+
+  const handlePageClick = () => {
+    setIsEditingPage(true)
+    setEditPageValue(currentPage.toString())
+  }
+
+  const handlePageSubmit = () => {
+    const pageNumber = parseInt(editPageValue)
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber)
+    }
+    setIsEditingPage(false)
+    setEditPageValue('')
+  }
+
+  const handlePageKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handlePageSubmit()
+    } else if (e.key === 'Escape') {
+      setIsEditingPage(false)
+      setEditPageValue('')
     }
   }
 
@@ -390,7 +415,23 @@ export function VoicingsByPcid() {
                 </button>
                 
                 <span className="pagination-info">
-                  Page {currentPage} of {totalPages} ({filteredData.length} entries)
+                  Page {isEditingPage ? (
+                    <input
+                      type="number"
+                      value={editPageValue}
+                      onChange={(e) => setEditPageValue(e.target.value)}
+                      onKeyDown={handlePageKeyPress}
+                      onBlur={handlePageSubmit}
+                      autoFocus
+                      className="page-edit-input"
+                      min="1"
+                      max={totalPages}
+                    />
+                  ) : (
+                    <span className="page-number" onClick={handlePageClick}>
+                      {currentPage}
+                    </span>
+                  )} of {totalPages} ({filteredData.length} entries)
                 </span>
                 
                 <button 

@@ -260,6 +260,32 @@ body {
   font-size: 0.9rem;
 }
 
+.page-number {
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.page-number:hover {
+  background-color: #e9ecef;
+}
+
+.page-edit-input {
+  width: 60px;
+  padding: 2px 4px;
+  border: 1px solid #007bff;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  text-align: center;
+  background-color: white;
+}
+
+.page-edit-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
 /* Detail View Styles */
 .detail-container {
   width: 100%;

@@ -5,6 +5,7 @@ import { playVoicing } from '../utils/audioSynthesis'
 import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
 import { Footer } from './Footer'
+import { BrowserFilter, type FilterState } from './BrowserFilter'
 import axios from 'axios'
 import { VoicingNotation } from './VoicingNotation'
 import { getApiUrl } from '../config/api'
@@ -28,14 +29,15 @@ export function VoicingsByPcid() {
   const [playingDigest, setPlayingDigest] = useState<string | null>(null)
   const [synthLoading, setSynthLoading] = useState(false)
   const [rank, setRank] = useState<number | null>(null)
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<FilterState>({
     minFrequencyShare: '',
     maxFrequencyShare: '',
     minDurationShare: '',
     maxDurationShare: '',
-    digestFilter: '',
+    pitchFilter: '',
     minPitches: '',
-    maxPitches: ''
+    maxPitches: '',
+    nameFilter: '' // Will be used for digest filter
   })
 
   const itemsPerPage = 15
@@ -118,9 +120,9 @@ export function VoicingsByPcid() {
         return durationPercent <= parseFloat(filters.maxDurationShare)
       })
     }
-    if (filters.digestFilter) {
+    if (filters.nameFilter) {
       filtered = filtered.filter(item => 
-        item.digest.toLowerCase().includes(filters.digestFilter.toLowerCase())
+        item.digest.toLowerCase().includes(filters.nameFilter.toLowerCase())
       )
     }
     if (filters.minPitches) {
@@ -152,8 +154,21 @@ export function VoicingsByPcid() {
   const startIndex = (currentPage - 1) * itemsPerPage
   const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage)
 
-  const handleFilterChange = (key: string, value: string) => {
+  const handleFilterChange = (key: keyof FilterState, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }))
+  }
+
+  const handleClearFilters = () => {
+    setFilters({
+      minFrequencyShare: '',
+      maxFrequencyShare: '',
+      minDurationShare: '',
+      maxDurationShare: '',
+      pitchFilter: '',
+      minPitches: '',
+      maxPitches: '',
+      nameFilter: ''
+    })
   }
 
   const handlePlayVoicing = async (digest: string) => {
@@ -237,105 +252,13 @@ export function VoicingsByPcid() {
             </div>
           </div>
           
-          <div className="filter-section">
-            <h4>Filters</h4>
-            
-            <div className="filter-group">
-              <label>Frequency Share (%)</label>
-              <input 
-                type="number" 
-                placeholder="Min frequency %" 
-                value={filters.minFrequencyShare}
-                onChange={(e) => handleFilterChange('minFrequencyShare', e.target.value)}
-                className="filter-input"
-                step="0.01"
-                min="0"
-                max="100"
-              />
-              <input 
-                type="number" 
-                placeholder="Max frequency %" 
-                value={filters.maxFrequencyShare}
-                onChange={(e) => handleFilterChange('maxFrequencyShare', e.target.value)}
-                className="filter-input"
-                step="0.01"
-                min="0"
-                max="100"
-              />
-            </div>
-
-            <div className="filter-group">
-              <label>Duration Share (%)</label>
-              <input 
-                type="number" 
-                placeholder="Min duration %" 
-                value={filters.minDurationShare}
-                onChange={(e) => handleFilterChange('minDurationShare', e.target.value)}
-                className="filter-input"
-                step="0.01"
-                min="0"
-                max="100"
-              />
-              <input 
-                type="number" 
-                placeholder="Max duration %" 
-                value={filters.maxDurationShare}
-                onChange={(e) => handleFilterChange('maxDurationShare', e.target.value)}
-                className="filter-input"
-                step="0.01"
-                min="0"
-                max="100"
-              />
-            </div>
-
-            <div className="filter-group">
-              <label>Digest</label>
-              <input 
-                type="text" 
-                placeholder="Search digest..." 
-                value={filters.digestFilter}
-                onChange={(e) => handleFilterChange('digestFilter', e.target.value)}
-                className="filter-input"
-              />
-            </div>
-
-            <div className="filter-group">
-              <label>Number of Pitches</label>
-              <input 
-                type="number" 
-                placeholder="Min pitches" 
-                value={filters.minPitches}
-                onChange={(e) => handleFilterChange('minPitches', e.target.value)}
-                className="filter-input"
-                min="1"
-                max="20"
-              />
-              <input 
-                type="number" 
-                placeholder="Max pitches" 
-                value={filters.maxPitches}
-                onChange={(e) => handleFilterChange('maxPitches', e.target.value)}
-                className="filter-input"
-                min="1"
-                max="20"
-              />
-            </div>
-
-            <button 
-              className="apply-filters-btn"
-              onClick={() => setFilters({
-                minFrequencyShare: '',
-                maxFrequencyShare: '',
-                minDurationShare: '',
-                maxDurationShare: '',
-                digestFilter: '',
-                minPitches: '',
-                maxPitches: ''
-              })}
-            >
-              Clear filters
-            </button>
-          </div>
+          <BrowserFilter
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onClearFilters={handleClearFilters}
+            nameFilterLabel="Digest Filter"
+            nameFilterPlaceholder="Search digest..."
+          />
         </aside>
 
         <main className="content">

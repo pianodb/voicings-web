@@ -143,6 +143,16 @@ body {
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
+.filter-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filter-input-row .filter-input {
+  flex: 1;
+  margin-bottom: 0.5rem;
+}
+
 .apply-filters-btn {
   width: 100%;
   background: #007bff;
@@ -264,6 +274,8 @@ body {
   cursor: pointer;
   padding: 2px 4px;
   border-radius: 3px;
+  background-color: #fff;
+  border: 1px solid #ddd;
   transition: background-color 0.2s;
 }
 
@@ -1362,6 +1374,9 @@ body {
 }
 
 /* Footer */
+a {
+  color: #007bff;
+}
 .footer {
   background: white;
   border-top: 1px solid #e9ecef;

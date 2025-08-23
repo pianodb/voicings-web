@@ -4,6 +4,7 @@ import { getPresentPitches } from '../utils/pitchClass'
 import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
 import { Footer } from './Footer'
+import { BrowserFilter, type FilterState } from './BrowserFilter'
 import csvData from '../assets/most_popular_cls_packed.csv?raw'
 import type { PitchClassData } from '../utils/types'
 import { loadPitchClassCsv } from '../utils/loadCsv'
@@ -19,14 +20,15 @@ export function PitchClassDatabase() {
   const [currentPage, setCurrentPage] = useState(1)
   const [isEditingPage, setIsEditingPage] = useState(false)
   const [editPageValue, setEditPageValue] = useState('')
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<FilterState>({
     minFrequencyShare: '',
     maxFrequencyShare: '',
     minDurationShare: '',
     maxDurationShare: '',
     pitchFilter: '',
     minPitches: '',
-    maxPitches: ''
+    maxPitches: '',
+    nameFilter: '' // Will be used for PCID filter
   })
 
   const itemsPerPage = 10
@@ -107,6 +109,14 @@ export function PitchClassDatabase() {
         return pitches.length <= parseInt(filters.maxPitches)
       })
     }
+    if (filters.nameFilter) {
+      const nameFilterValue = filters.nameFilter.trim()
+      if (nameFilterValue) {
+        filtered = filtered.filter(item => 
+          item.pcid.toString().includes(nameFilterValue)
+        )
+      }
+    }
 
     setFilteredData(filtered)
 
@@ -134,8 +144,21 @@ export function PitchClassDatabase() {
   const startIndex = (currentPage - 1) * itemsPerPage
   const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage)
 
-  const handleFilterChange = (key: string, value: string) => {
+  const handleFilterChange = (key: keyof FilterState, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }))
+  }
+
+  const handleClearFilters = () => {
+    setFilters({
+      minFrequencyShare: '',
+      maxFrequencyShare: '',
+      minDurationShare: '',
+      maxDurationShare: '',
+      pitchFilter: '',
+      minPitches: '',
+      maxPitches: '',
+      nameFilter: ''
+    })
   }
 
   const handlePcidClick = (pcid: number, rank?: number) => {
@@ -171,102 +194,13 @@ export function PitchClassDatabase() {
 
       <div className="main-content">
         <aside className="sidebar">
-
-          <h3>Filters</h3>
-          
-          <div className="filter-group">
-            <label>Frequency Share (%)</label>
-            <input 
-              type="number" 
-              placeholder="Min frequency %" 
-              value={filters.minFrequencyShare}
-              onChange={(e) => handleFilterChange('minFrequencyShare', e.target.value)}
-              className="filter-input"
-              step="0.01"
-              min="0"
-              max="100"
-            />
-            <input 
-              type="number" 
-              placeholder="Max frequency %" 
-              value={filters.maxFrequencyShare}
-              onChange={(e) => handleFilterChange('maxFrequencyShare', e.target.value)}
-              className="filter-input"
-              step="0.01"
-              min="0"
-              max="100"
-            />
-          </div>
-
-          <div className="filter-group">
-            <label>Duration Share (%)</label>
-            <input 
-              type="number" 
-              placeholder="Min duration %" 
-              value={filters.minDurationShare}
-              onChange={(e) => handleFilterChange('minDurationShare', e.target.value)}
-              className="filter-input"
-              step="0.01"
-              min="0"
-              max="100"
-            />
-            <input 
-              type="number" 
-              placeholder="Max duration %" 
-              value={filters.maxDurationShare}
-              onChange={(e) => handleFilterChange('maxDurationShare', e.target.value)}
-              className="filter-input"
-              step="0.01"
-              min="0"
-              max="100"
-            />
-          </div>
-
-          <div className="filter-group">
-            <label>Number of Pitches</label>
-            <input 
-              type="number" 
-              placeholder="Min pitches" 
-              value={filters.minPitches}
-              onChange={(e) => handleFilterChange('minPitches', e.target.value)}
-              className="filter-input"
-            />
-            <input 
-              type="number" 
-              placeholder="Max pitches" 
-              value={filters.maxPitches}
-              onChange={(e) => handleFilterChange('maxPitches', e.target.value)}
-              className="filter-input"
-            />
-          </div>
-
-          <div className="filter-group">
-            <label>Contains Pitches</label>
-            <input 
-              type="text" 
-              placeholder="e.g., C, F#, Bb" 
-              value={filters.pitchFilter}
-              onChange={(e) => handleFilterChange('pitchFilter', e.target.value)}
-              className="filter-input"
-            />
-          </div>
-
-          <button 
-            className="apply-filters-btn"
-            onClick={() => setFilters({
-              minFrequencyShare: '',
-              maxFrequencyShare: '',
-              minDurationShare: '',
-              maxDurationShare: '',
-              pitchFilter: '',
-              minPitches: '',
-              maxPitches: ''
-            })}
-          >
-            Clear filters
-          </button>
-
-
+          <BrowserFilter
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onClearFilters={handleClearFilters}
+            nameFilterLabel="PCID Filter"
+            nameFilterPlaceholder="e.g., 144"
+          />
         </aside>
 
         <main className="content">
@@ -287,7 +221,6 @@ export function PitchClassDatabase() {
                       <th>PCID</th>
                       <th>Pitch Classes</th>
                       <th>Frequency</th>
-                      {/* <th>Duration</th> */}
                       <th>Notes</th>
                       <th>Frequency %</th>
                       <th>Duration %</th>
@@ -315,7 +248,6 @@ export function PitchClassDatabase() {
                           </td>
                           <td className="pitch-list">{pitches.join(' ')}</td>
                           <td>{item.frequency.toLocaleString()}</td>
-                          {/* <td>{item.duration.toLocaleString()}</td> */}
                           <td>
                             <MusicNotation 
                               pcid={item.pcid}

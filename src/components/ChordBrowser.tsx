@@ -90,12 +90,19 @@ export function PitchClassDatabase() {
       })
     }
     if (filters.pitchFilter) {
-      filtered = filtered.filter(item => {
-        const pitches = getPresentPitches(item.pcid)
-        return pitches.some(pitch => 
-          pitch.toLowerCase().includes(filters.pitchFilter.toLowerCase())
-        )
-      })
+      const filterPitches = filters.pitchFilter
+        .split(',')
+        .map(p => p.trim().toLowerCase())
+        .filter(p => p.length > 0)
+      
+      if (filterPitches.length > 0) {
+        filtered = filtered.filter(item => {
+          const pitches = getPresentPitches(item.pcid).map(p => p.toLowerCase())
+          return filterPitches.every(filterPitch => 
+            pitches.some(pitch => pitch.includes(filterPitch))
+          )
+        })
+      }
     }
     if (filters.minPitches) {
       filtered = filtered.filter(item => {
@@ -202,10 +209,10 @@ export function PitchClassDatabase() {
           </div>
 
           <div className="filter-group">
-            <label>Contains Pitch</label>
+            <label>Contains Pitches</label>
             <input 
               type="text" 
-              placeholder="e.g., C, F#, Bb..." 
+              placeholder="e.g., C, F#, Bb" 
               value={filters.pitchFilter}
               onChange={(e) => handleFilterChange('pitchFilter', e.target.value)}
               className="filter-input"

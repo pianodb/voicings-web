@@ -75,7 +75,7 @@ export function unpackNotes(input: string): number[] {
  * Pack a list of pitch classes into an integer
  * Assumes root (0) is always present, so we only encode bits 1-11
  */
-export function packPitchClass(notes: number[]): number {
+export function packPitchClass(notes: Iterable<number>): number {
   let packed = 0
   for (const note of notes) {
     if (note < 0 || note > 11) {

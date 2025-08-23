@@ -172,8 +172,17 @@ export function VoicingDetail() {
           <div className="detail-content">
             <h2>Overview</h2>
 
+
             <div className="overview-grid">
               <div className="overview-section">
+                <div className='overview-row'>
+                  <span className="label">Notes</span>
+                  <span className="value">
+                    <VoicingNotation 
+                      notes={voicingAnalysis?.notes.map(n => n + 48)} 
+                    />
+                  </span>
+                </div>
                 <div className="overview-row">
                   <span className="label">Digest</span>
                   <span className="value digest-value">{voicing.digest}</span>
@@ -233,10 +242,6 @@ export function VoicingDetail() {
                   </div>
                 )}
               </div>
-
-              <VoicingNotation 
-                notes={voicingAnalysis?.notes.map(n => n + 48)} 
-              />
             </div>
           </div>
 

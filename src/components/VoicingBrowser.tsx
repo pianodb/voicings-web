@@ -318,9 +318,6 @@ export function VoicingsByPcid() {
                   <thead>
                     <tr>
                       <th>Digest</th>
-                      <th>Notes</th>
-                      {/* <th>Note Count</th> */}
-                      {/* <th>Span</th> */}
                       <th>Frequency</th>
                       <th>Duration</th>
                       <th>Notes</th>
@@ -351,9 +348,6 @@ export function VoicingsByPcid() {
                             title="Click to view detailed analysis"
                           >
                             {item.digest}
-                          </td>
-                          <td className="note-names">
-                            {parseDigest ? parseDigest.noteNames.join(' ') : 'Error parsing'}
                           </td>
                           <td>{item.frequency.toLocaleString()}</td>
                           <td>{item.duration.toLocaleString()}</td>

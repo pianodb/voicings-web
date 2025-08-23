@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getPresentPitches, PITCH_CLASSES, packNotes } from '../utils/pitchClass'
+import { getPresentPitches, PITCH_CLASSES, packNotes, packPitchClass } from '../utils/pitchClass'
 import { MusicNotation } from './MusicNotation'
 import { Piano } from './Piano'
 import { Header } from './Header'
@@ -10,6 +10,7 @@ interface PitchClassData {
   frequency: number
   duration: number
   pcid: number
+  frequencyRank: number
 }
 
 export function Search() {
@@ -25,12 +26,13 @@ export function Search() {
         const lines = csvData.split('\n')
         const data: PitchClassData[] = lines.slice(1)
           .filter((line: string) => line.trim())
-          .map((line: string) => {
+          .map((line: string, index: number) => {
             const values = line.split(',')
             return {
               frequency: parseInt(values[0]),
               duration: parseFloat(values[1]),
-              pcid: parseInt(values[2])
+              pcid: parseInt(values[2]),
+              frequencyRank: index + 1  // First entry is rank 1
             }
           })
         
@@ -66,12 +68,7 @@ export function Search() {
       pitchClasses.add(pitchClass)
     })
     
-    let pcid = 0
-    pitchClasses.forEach(pitchClass => {
-      if (pitchClass > 0) { // Skip C (pitch class 0) as it's not included in PCID
-        pcid |= (1 << (pitchClass - 1))
-      }
-    })
+    let pcid = packPitchClass(pitchClasses)
     return pcid
   }
 
@@ -292,15 +289,13 @@ export function Search() {
                       <th>Match Type</th>
                       <th>PCID</th>
                       <th>Pitch Classes</th>
-                      <th>Frequency</th>
                       <th>Notes</th>
-                      <th>Frequency %</th>
+                      <th>Frequency</th>
+                      <th>Freq. Rank</th>
                     </tr>
                   </thead>
                   <tbody>
                     {searchResults.map((item) => {
-                      const totalFrequency = pitchClassData.reduce((sum, d) => sum + d.frequency, 0)
-                      const frequencyPercent = ((item.frequency / totalFrequency) * 100).toFixed(2)
                       const pitches = getPresentPitches(item.pcid)
                       const isExactMatch = item.pcid === userPcid
                       
@@ -316,14 +311,14 @@ export function Search() {
                             {item.pcid}
                           </td>
                           <td className="pitch-list">{pitches.join(' ')}</td>
-                          <td>{item.frequency.toLocaleString()}</td>
                           <td>
                             <MusicNotation 
                               pcid={item.pcid}
                               showTitle={false}
                             />
                           </td>
-                          <td>{frequencyPercent}%</td>
+                          <td>{item.frequency.toLocaleString()}</td>
+                          <td>#{item.frequencyRank}</td>
                         </tr>
                       )
                     })}

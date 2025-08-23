@@ -4,6 +4,7 @@ import { getPresentPitches, getNotesFromDigest, calculateInversions } from '../u
 import { playVoicing } from '../utils/audioSynthesis'
 import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
+import { Footer } from './Footer'
 import axios from 'axios'
 import { VoicingNotation } from './VoicingNotation'
 import { getApiUrl } from '../config/api'
@@ -404,6 +405,7 @@ export function VoicingsByPcid() {
           )}
         </main>
       </div>
+      <Footer />
     </div>
   )
 }

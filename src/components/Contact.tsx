@@ -1,4 +1,5 @@
 import { Header } from './Header'
+import { Footer } from './Footer'
 import '../App.css'
 
 export function Contact() {
@@ -86,6 +87,7 @@ export function Contact() {
           </div>
         </main>
       </div>
+      <Footer />
     </div>
   )
 }

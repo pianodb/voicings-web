@@ -1,4 +1,5 @@
 import { Header } from './Header'
+import { Footer } from './Footer'
 import '../App.css'
 
 export function About() {
@@ -85,6 +86,7 @@ export function About() {
           </div>
         </main>
       </div>
+      <Footer />
     </div>
   )
 }

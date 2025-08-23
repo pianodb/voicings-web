@@ -3,6 +3,7 @@ import { getPresentPitches, PITCH_CLASSES, packNotes, packPitchClass } from '../
 import { MusicNotation } from './MusicNotation'
 import { Piano } from './Piano'
 import { Header } from './Header'
+import { Footer } from './Footer'
 import csvData from '../assets/most_popular_cls_packed.csv?raw'
 import { VoicingNotation } from './VoicingNotation'
 
@@ -336,6 +337,7 @@ export function Search() {
           )}
         </main>
       </div>
+      <Footer />
     </div>
   )
 }

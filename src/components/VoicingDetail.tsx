@@ -5,6 +5,7 @@ import { getNotesFromDigest, type NoteInfo } from '../utils/pitchClass'
 import { playVoicing, playArpeggio } from '../utils/audioSynthesis'
 import { VoicingNotation } from './VoicingNotation'
 import { Header } from './Header'
+import { Footer } from './Footer'
 import { getApiUrl } from '../config/api'
 
 interface VoicingData {
@@ -247,6 +248,7 @@ export function VoicingDetail() {
 
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

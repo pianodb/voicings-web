@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { getPresentPitches } from '../utils/pitchClass'
 import { MusicNotation } from './MusicNotation'
 import { Header } from './Header'
+import { Footer } from './Footer'
 import csvData from '../assets/most_popular_cls_packed.csv?raw'
 
 interface PitchClassData {
@@ -324,6 +325,7 @@ export function PitchClassDatabase() {
           )}
         </main>
       </div>
+      <Footer />
     </div>
   )
 }
